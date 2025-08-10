@@ -16,8 +16,8 @@ namespace Proteo5.HideDB.Lib.Generators
             sb.AppendLine("using System.ComponentModel;");
             sb.AppendLine();
             
-            // Namespace
-            sb.AppendLine($"namespace {config.Namespace}.Enums");
+            // Namespace - Updated for entity-first structure
+            sb.AppendLine($"namespace {config.Namespace}.{entityDef.Entity}E");
             sb.AppendLine("{");
 
             foreach (var catalog in entityDef.Catalogs)

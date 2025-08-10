@@ -18,11 +18,10 @@ namespace Proteo5.HideDB.Lib.Generators
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
-            sb.AppendLine($"using {config.Namespace}.Models;");
             sb.AppendLine();
             
-            // Namespace
-            sb.AppendLine($"namespace {config.Namespace}.Repositories");
+            // Namespace - Updated for entity-first structure
+            sb.AppendLine($"namespace {config.Namespace}.{entityDef.Entity}E");
             sb.AppendLine("{");
             
             // XML Documentation
@@ -82,13 +81,10 @@ namespace Proteo5.HideDB.Lib.Generators
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using System.Configuration;");
             sb.AppendLine("using System.Linq;");
-            sb.AppendLine($"using {config.Namespace}.Models;");
-            if (config.GenerateInterfaces)
-                sb.AppendLine($"using {config.Namespace}.Repositories;");
             sb.AppendLine();
             
-            // Namespace
-            sb.AppendLine($"namespace {config.Namespace}.Repositories");
+            // Namespace - Updated for entity-first structure
+            sb.AppendLine($"namespace {config.Namespace}.{entityDef.Entity}E");
             sb.AppendLine("{");
             
             // XML Documentation
@@ -98,25 +94,35 @@ namespace Proteo5.HideDB.Lib.Generators
             sb.AppendLine("    /// </summary>");
             
             // Clase
-            var implementsInterface = config.GenerateInterfaces ? $" : I{entityDef.Entity}Repository" : "";
-            sb.AppendLine($"    public class {entityDef.Entity}Repository{implementsInterface}");
+            sb.AppendLine($"    public class {entityDef.Entity}Repository : I{entityDef.Entity}Repository");
             sb.AppendLine("    {");
             
-            // Campo connection string
+            // Constructor fields
             sb.AppendLine("        private readonly string _connectionString;");
             sb.AppendLine();
             
-            // Constructores
-            GenerateConstructors(sb, entityDef.Entity, config);
+            // Default constructor
+            sb.AppendLine($"        public {entityDef.Entity}Repository()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            _connectionString = ConfigurationManager.ConnectionStrings[\"DefaultConnection\"]?.ConnectionString");
+            sb.AppendLine("                ?? throw new InvalidOperationException(\"Connection string 'DefaultConnection' not found\");");
+            sb.AppendLine("        }");
+            sb.AppendLine();
             
-            // Métodos para cada statement
+            // Parameterized constructor
+            sb.AppendLine($"        public {entityDef.Entity}Repository(string connectionString)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            
+            // Métodos
             foreach (var statement in entityDef.Statements)
             {
                 GenerateRepositoryMethods(sb, statement, modelName, entityDef, config);
-                sb.AppendLine();
             }
             
-            // Método mapper
+            // Mapper method
             GenerateMapperMethod(sb, entityDef, modelName);
             
             sb.AppendLine("    }");

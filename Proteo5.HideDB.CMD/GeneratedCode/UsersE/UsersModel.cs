@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Proteo5.HideDB.Generated.Models
+namespace Proteo5.HideDB.Generated.UsersE
 {
     /// <summary>
     /// Modelo para la entidad Users

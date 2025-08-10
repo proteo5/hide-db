@@ -1,6 +1,6 @@
 ﻿-- Tabla generada automáticamente para Users
 -- Version: 1.0 | Entity Version: 1
--- Generado: 2025-08-10 01:46:32
+-- Generado: 2025-08-10 01:56:11
 
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' AND xtype='U')
 BEGIN

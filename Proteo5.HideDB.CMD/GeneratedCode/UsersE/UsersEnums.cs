@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Proteo5.HideDB.Generated.Enums
+namespace Proteo5.HideDB.Generated.UsersE
 {
     /// <summary>
     /// Enum para el catálogo statuses de Users

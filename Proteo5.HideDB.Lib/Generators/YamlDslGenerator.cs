@@ -107,21 +107,22 @@ namespace Proteo5.HideDB.Lib.Generators
         private async Task GenerateAllFilesAsync(EntityDefinition entityDef)
         {
             var entityName = entityDef.Entity;
+            var entityFolderName = $"{entityName}E"; // Add "E" suffix for entity folder
             
             // 1. Generar modelo
             var modelCode = _modelGenerator.GenerateModel(entityDef, _config);
-            await WriteFileAsync($"Models/{entityName}Model.cs", modelCode);
+            await WriteFileAsync($"{entityFolderName}/{entityName}Model.cs", modelCode);
             
             // 2. Generar interfaz
             if (_config.GenerateInterfaces)
             {
                 var interfaceCode = _repositoryGenerator.GenerateInterface(entityDef, _config);
-                await WriteFileAsync($"Repositories/I{entityName}Repository.cs", interfaceCode);
+                await WriteFileAsync($"{entityFolderName}/I{entityName}Repository.cs", interfaceCode);
             }
             
             // 3. Generar repositorio
             var repositoryCode = _repositoryGenerator.GenerateRepository(entityDef, _config);
-            await WriteFileAsync($"Repositories/{entityName}Repository.cs", repositoryCode);
+            await WriteFileAsync($"{entityFolderName}/{entityName}Repository.cs", repositoryCode);
             
             // 4. Generar SQL
             var sqlCode = _sqlGenerator.GenerateCreateTableScript(entityDef, _config);
@@ -131,7 +132,7 @@ namespace Proteo5.HideDB.Lib.Generators
             if (entityDef.Catalogs?.Count > 0)
             {
                 var enumsCode = _enumGenerator.GenerateEnums(entityDef, _config);
-                await WriteFileAsync($"Enums/{entityName}Enums.cs", enumsCode);
+                await WriteFileAsync($"{entityFolderName}/{entityName}Enums.cs", enumsCode);
             }
         }
 
@@ -178,13 +179,14 @@ namespace Proteo5.HideDB.Lib.Generators
             if (string.IsNullOrEmpty(yamlFileName)) return Task.CompletedTask;
             
             var baseName = Path.GetFileNameWithoutExtension(yamlFileName);
+            var entityFolderName = $"{baseName}E"; // Add "E" suffix for entity folder
             
             var filesToDelete = new[]
             {
-                Path.Combine(_config.OutputPath, $"Models/{baseName}Model.cs"),
-                Path.Combine(_config.OutputPath, $"Repositories/I{baseName}Repository.cs"),
-                Path.Combine(_config.OutputPath, $"Repositories/{baseName}Repository.cs"),
-                Path.Combine(_config.OutputPath, $"Enums/{baseName}Enums.cs"),
+                Path.Combine(_config.OutputPath, $"{entityFolderName}/{baseName}Model.cs"),
+                Path.Combine(_config.OutputPath, $"{entityFolderName}/I{baseName}Repository.cs"),
+                Path.Combine(_config.OutputPath, $"{entityFolderName}/{baseName}Repository.cs"),
+                Path.Combine(_config.OutputPath, $"{entityFolderName}/{baseName}Enums.cs"),
                 Path.Combine(_config.SqlOutputPath, $"{baseName}_CreateTable.sql")
             };
 
@@ -193,8 +195,16 @@ namespace Proteo5.HideDB.Lib.Generators
                 if (File.Exists(file))
                 {
                     File.Delete(file);
-                    LogInfo($"? Eliminado: {Path.GetFileName(file)}");
+                    LogInfo($"??? Eliminado: {Path.GetFileName(file)}");
                 }
+            }
+
+            // Also try to delete the entity folder if it's empty
+            var entityFolderPath = Path.Combine(_config.OutputPath, entityFolderName);
+            if (Directory.Exists(entityFolderPath) && !Directory.EnumerateFileSystemEntries(entityFolderPath).Any())
+            {
+                Directory.Delete(entityFolderPath);
+                LogInfo($"?? Carpeta eliminada: {entityFolderName}");
             }
             
             return Task.CompletedTask;
@@ -205,9 +215,7 @@ namespace Proteo5.HideDB.Lib.Generators
             Directory.CreateDirectory(_config.YamlPath);
             Directory.CreateDirectory(_config.OutputPath);
             Directory.CreateDirectory(_config.SqlOutputPath);
-            Directory.CreateDirectory(Path.Combine(_config.OutputPath, "Models"));
-            Directory.CreateDirectory(Path.Combine(_config.OutputPath, "Repositories"));
-            Directory.CreateDirectory(Path.Combine(_config.OutputPath, "Enums"));
+            // Entity-specific folders will be created dynamically in WriteFileAsync
         }
 
         private void LogInfo(string message)

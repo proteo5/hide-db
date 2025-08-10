@@ -26,6 +26,7 @@ Proteo5.HideDB revolutionizes database development by automatically generating t
 - **Repository Interfaces** for dependency injection and testing
 - **Repository Implementations** with async/await support
 - **Type-Safe SQL Operations** with automatic parameter mapping
+- **Enum Catalogs** for string-based fields with predefined values
 
 ### ?? **Modern .NET Integration**
 - **.NET 8.0** native support with latest C# features
@@ -38,6 +39,7 @@ Proteo5.HideDB revolutionizes database development by automatically generating t
 - **IntelliSense Support** - Full IDE integration
 - **Error Reporting** - Clear diagnostics during compilation
 - **Hot Reload** - Changes reflect immediately
+- **Entity-First Structure** - Organized by entity with "E" suffix folders
 
 ## ?? Proteo5.HideDB vs sqlc - A Better Approach
 
@@ -73,6 +75,17 @@ Proteo5.HideDB/
 ?       ??? RepositoryGenerator.cs      # Repository pattern generation
 ??? Proteo5.HideDB.Lib/                 # Legacy file-watching generator
 ??? Proteo5.HideDB.CMD/                 # Command-line tool (legacy support)
+?   ??? GeneratedCode/                  # ?? Entity-First Structure
+?       ??? UsersE/                     # Users entity folder
+?       ?   ??? UsersModel.cs           # Generated model
+?       ?   ??? IUsersRepository.cs     # Repository interface
+?       ?   ??? UsersRepository.cs      # Repository implementation
+?       ?   ??? UsersEnums.cs           # Status enums
+?       ??? RolesE/                     # Roles entity folder
+?           ??? RolesModel.cs           # Generated model
+?           ??? IRolesRepository.cs     # Repository interface
+?           ??? RolesRepository.cs      # Repository implementation
+?           ??? RolesEnums.cs           # Status enums
 ??? Proteo5.HideDB.TestApp/             # ?? Source Generator demo
 ?   ??? Entities/                       # YAML entity definitions
 ?   ?   ??? Users.yaml                  # Example entity
@@ -147,10 +160,22 @@ fields:
     nullable: true
     description: "User's first name"
     
-  - name: "IsActive"
-    type: "bool"
+  - name: "Status"
+    type: "string"
+    maxLength: 20
+    defaultValue: "active"
+    catalog: "statuses"
     required: true
-    description: "Whether the user is active"
+    description: "User status"
+
+catalogs:
+  statuses:
+    - name: "active"
+      description: "Active user"
+    - name: "inactive"
+      description: "Inactive user"
+    - name: "pending"
+      description: "Pending approval"
 
 statements:
   - name: "Insert"
@@ -158,15 +183,15 @@ statements:
     return: "nothing"
     description: "Create a new user"
     sql: |
-      INSERT INTO Users (Username, Email, FirstName, IsActive)
-      VALUES (@Username, @Email, @FirstName, @IsActive);
+      INSERT INTO Users (Username, Email, FirstName, Status)
+      VALUES (@Username, @Email, @FirstName, @Status);
   
   - name: "GetAll"
     type: "Select"
     return: "many"
     description: "Get all users"
     sql: |
-      SELECT Id, Username, Email, FirstName, IsActive
+      SELECT Id, Username, Email, FirstName, Status
       FROM Users ORDER BY Username;
   
   - name: "GetById"
@@ -174,7 +199,7 @@ statements:
     return: "one"
     description: "Get user by ID"
     sql: |
-      SELECT Id, Username, Email, FirstName, IsActive
+      SELECT Id, Username, Email, FirstName, Status
       FROM Users WHERE Id = @Id;
 ```
 
@@ -188,8 +213,7 @@ dotnet build
 **? That's it! The code is generated automatically with full IntelliSense support:**
 
 ```csharp
-using Proteo5.HideDB.Generated.Models;
-using Proteo5.HideDB.Generated.Repositories;
+using Proteo5.HideDB.Generated.UsersE;
 
 // Generated model with Data Annotations
 var user = new UsersModel
@@ -197,16 +221,19 @@ var user = new UsersModel
     Username = "john_doe",
     Email = "john@example.com",
     FirstName = "John",
-    IsActive = true
+    Status = "active"
 };
 
 // Generated repository with full IntelliSense
 var repository = new UsersRepository(connectionString);
 
 // Type-safe async operations
-await repository.InsertAsync(user.Username, user.Email, user.FirstName, user.IsActive);
+await repository.InsertAsync(user.Username, user.Email, user.FirstName, user.Status);
 var users = await repository.GetAllAsync();
 var specificUser = await repository.GetByIdAsync(1);
+
+// Use generated enums for type safety
+var activeStatus = UsersStatuses.Active.ToString().ToLower(); // "active"
 ```
 
 ## ?? YAML DSL Reference
@@ -242,7 +269,20 @@ fields:
     required: true             # Optional: Required field
     nullable: true             # Optional: Allows null values
     maxLength: 100             # Optional: Maximum length for strings
+    defaultValue: "active"     # Optional: Default value
+    catalog: "statuses"        # Optional: Reference to catalogs section
     description: "Description" # Optional: Field description
+```
+
+### **Catalogs (Enums)**
+
+```yaml
+catalogs:
+  statuses:                    # Catalog name (referenced by fields)
+    - name: "active"           # Enum value
+      description: "Active"    # Enum description
+    - name: "inactive"
+      description: "Inactive"
 ```
 
 ### **Statement Types**
@@ -281,7 +321,23 @@ public class UsersModel
     public string? FirstName { get; set; }
 
     [Required]
-    public bool IsActive { get; set; }
+    [MaxLength(20)]
+    public string Status { get; set; } = string.Empty;
+}
+```
+
+### **Generated Enums**
+```csharp
+public enum UsersStatuses
+{
+    [Description("Active user")]
+    Active = 0,
+    
+    [Description("Inactive user")]
+    Inactive = 1,
+    
+    [Description("Pending approval")]
+    Pending = 2
 }
 ```
 
@@ -289,7 +345,7 @@ public class UsersModel
 ```csharp
 public interface IUsersRepository
 {
-    Task<int> InsertAsync(string username, string email, string? firstName, bool isActive);
+    Task<int> InsertAsync(string username, string email, string? firstName, string status);
     Task<List<UsersModel>> GetAllAsync();
     Task<UsersModel?> GetByIdAsync(int id);
 }
@@ -306,19 +362,19 @@ public class UsersRepository : IUsersRepository
         _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
     }
 
-    public async Task<int> InsertAsync(string username, string email, string? firstName, bool isActive)
+    public async Task<int> InsertAsync(string username, string email, string? firstName, string status)
     {
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand();
         await connection.OpenAsync();
         command.Connection = connection;
-        command.CommandText = @"INSERT INTO Users (Username, Email, FirstName, IsActive)
-                               VALUES (@Username, @Email, @FirstName, @IsActive);";
+        command.CommandText = @"INSERT INTO Users (Username, Email, FirstName, Status)
+                               VALUES (@Username, @Email, @FirstName, @Status);";
         
         command.Parameters.AddWithValue("@Username", username ?? DBNull.Value);
         command.Parameters.AddWithValue("@Email", email ?? DBNull.Value);
         command.Parameters.AddWithValue("@FirstName", firstName ?? DBNull.Value);
-        command.Parameters.AddWithValue("@IsActive", isActive);
+        command.Parameters.AddWithValue("@Status", status ?? DBNull.Value);
         
         return await command.ExecuteNonQueryAsync();
     }
@@ -327,191 +383,66 @@ public class UsersRepository : IUsersRepository
 }
 ```
 
-## ?? Usage Examples
+## ?? Entity-First Folder Structure
 
-### **Dependency Injection Setup**
+**NEW in v2.1: Entity-First Organization with "E" Suffix**
+
+Proteo5.HideDB now organizes generated code by entity, making it easier to navigate and maintain:
+
+### **Traditional Structure (Old)**
+```
+GeneratedCode/
+??? Models/
+?   ??? UsersModel.cs
+?   ??? RolesModel.cs
+??? Repositories/
+?   ??? IUsersRepository.cs
+?   ??? UsersRepository.cs
+?   ??? IRolesRepository.cs
+?   ??? RolesRepository.cs
+??? Enums/
+    ??? UsersEnums.cs
+    ??? RolesEnums.cs
+```
+
+### **Entity-First Structure (New)**
+```
+GeneratedCode/
+??? UsersE/                    # ?? Users entity folder
+?   ??? UsersModel.cs          # Model with namespace: Proteo5.HideDB.Generated.UsersE
+?   ??? IUsersRepository.cs    # Interface
+?   ??? UsersRepository.cs     # Implementation
+?   ??? UsersEnums.cs          # Enums
+??? RolesE/                    # ?? Roles entity folder
+    ??? RolesModel.cs          # Model with namespace: Proteo5.HideDB.Generated.RolesE
+    ??? IRolesRepository.cs    # Interface
+    ??? RolesRepository.cs     # Implementation
+    ??? RolesEnums.cs          # Enums
+```
+
+### **Benefits of Entity-First Structure**
+
+1. **??? Better Organization**: All files for an entity are in one folder
+2. **?? Easier Navigation**: Find all Users-related code in `UsersE/` folder
+3. **?? Cleaner Namespaces**: Each entity has its own namespace
+4. **?? Easier Refactoring**: Move or rename entity folders independently
+5. **?? Logical Grouping**: Related models, repositories, and enums together
+
+### **Using Entity-First Structure**
+
 ```csharp
-// Program.cs (.NET 8 minimal APIs)
-var builder = WebApplication.CreateBuilder(args);
+// Import specific entity namespace
+using Proteo5.HideDB.Generated.UsersE;
+using Proteo5.HideDB.Generated.RolesE;
 
-// Register generated repository
-builder.Services.AddScoped<IUsersRepository>(provider => 
-    new UsersRepository(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Use types from specific entities
+var usersRepo = new UsersRepository(connectionString);
+var rolesRepo = new RolesRepository(connectionString);
 
-var app = builder.Build();
-```
+// Types are scoped to their entity
+var user = new UsersModel();  // From UsersE namespace
+var role = new RolesModel();  // From RolesE namespace
 
-### **Controller Usage**
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-public class UsersController : ControllerBase
-{
-    private readonly IUsersRepository _usersRepository;
-
-    public UsersController(IUsersRepository usersRepository)
-    {
-        _usersRepository = usersRepository;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<List<UsersModel>>> GetUsers()
-    {
-        var users = await _usersRepository.GetAllAsync();
-        return Ok(users);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> CreateUser(CreateUserRequest request)
-    {
-        await _usersRepository.InsertAsync(
-            request.Username, 
-            request.Email, 
-            request.FirstName, 
-            true);
-        return Ok();
-    }
-}
-```
-
-## ?? Development Workflow
-
-### **Real-Time Development Experience**
-1. **Edit** YAML entity definitions
-2. **Build** project (`Ctrl+Shift+B`)
-3. **Code appears** instantly with IntelliSense
-4. **Use generated classes** with full type safety
-
-### **IDE Integration**
-- ? **Visual Studio**: Full IntelliSense support
-- ? **VS Code**: IntelliSense with C# extension
-- ? **JetBrains Rider**: Complete code generation support
-- ? **Error Reporting**: Clear diagnostics for YAML issues
-
-### **Debugging Source Generators**
-```bash
-# View generated code in build output
-dotnet build --verbosity detailed
-
-# Generated files location:
-# obj/Debug/net8.0/Proteo5.HideDB.SourceGenerator/
-```
-
-## ?? Try It Now!
-
-### **Clone and Run the Demo**
-```bash
-git clone https://github.com/your-username/hide-db.git
-cd hide-db/Proteo5.HideDB.TestApp
-dotnet build
-dotnet run
-```
-
-### **What You'll See**
-- ? Real-time code generation in action
-- ? Generated `UsersModel` with Data Annotations  
-- ? Generated `IUsersRepository` interface
-- ? Generated `UsersRepository` implementation
-- ? Full IntelliSense support for all generated code
-
-## ?? Legacy Mode (File Watcher)
-
-For backward compatibility, the legacy file-watching mode is still available:
-
-```bash
-cd Proteo5.HideDB.CMD
-
-# Show Source Generator setup instructions
-dotnet run
-
-# Legacy file watching mode
-dotnet run watch
-
-# Manual generation mode  
-dotnet run generate
-```
-
-## ?? Project Statistics
-
-- **Primary Language**: C# 13.0 with .NET 8.0
-- **Architecture**: Roslyn Source Generators + Repository Pattern
-- **Generated Code Features**:
-  - ? Data Annotations
-  - ? Nullable Reference Types
-  - ? Async/Await patterns
-  - ? Dependency Injection ready
-  - ? Type-safe operations
-- **Dependencies**:
-  - Microsoft.CodeAnalysis.CSharp 4.5.0
-  - YamlDotNet 16.3.0
-  - Microsoft.Data.SqlClient 6.0.2
-
-## ?? Key Benefits Over Traditional Approaches
-
-### **vs Entity Framework Code-First**
-- ? **Explicit SQL Control** - Write exact SQL you want
-- ? **Performance** - No heavy ORM overhead
-- ? **Simple Mapping** - Direct database-to-object mapping
-- ? **Clear Intent** - SQL queries are visible and maintainable
-
-### **vs Dapper + Manual Code**
-- ? **No Boilerplate** - Models and repositories auto-generated
-- ? **Type Safety** - Compile-time checking of SQL parameters
-- ? **Consistency** - All repositories follow same patterns
-- ? **Maintainability** - Single source of truth in YAML
-
-### **vs sqlc (Go)**
-- ? **Higher-Level Abstractions** - Entity-focused vs SQL-focused
-- ? **Complete Code Generation** - Models + repositories vs just queries
-- ? **Real-Time IDE Integration** - Instant IntelliSense vs build-time only
-- ? **Modern .NET Features** - Nullable types, async/await, DI ready
-
-## ?? Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### **Development Setup**
-```bash
-git clone https://github.com/your-username/hide-db.git
-cd hide-db
-dotnet restore
-dotnet build
-```
-
-### **Running Tests**
-```bash
-# Build and test the source generator
-cd Proteo5.HideDB.TestApp
-dotnet build
-dotnet run
-```
-
-## ?? License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## ?? Acknowledgments
-
-- **[sqlc](https://github.com/sqlc-dev/sqlc)** - Original inspiration for compile-time safe SQL generation
-- **[Roslyn Source Generators](https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview)** - Enabling real-time code generation
-- **[YamlDotNet](https://github.com/aaubry/YamlDotNet)** - YAML parsing and serialization
-- **[.NET Community](https://dotnet.microsoft.com/platform/community)** - For continuous innovation and best practices
-
-## ?? Support & Community
-
-- **Issues**: [GitHub Issues](https://github.com/your-username/hide-db/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/hide-db/discussions)
-- **Documentation**: [Wiki](https://github.com/your-username/hide-db/wiki)
-
----
-
-<div align="center">
-
-**? Experience the future of database development with real-time code generation!**
-
-*Made with ?? for the .NET community*
-
-[![GitHub Stars](https://img.shields.io/github/stars/your-username/hide-db?style=social)](https://github.com/your-username/hide-db/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/your-username/hide-db?style=social)](https://github.com/your-username/hide-db/network/members)
-
-</div>
+// Enums are also entity-scoped
+var userStatus = UsersStatuses.Active;
+var roleStatus = RolesStatuses.Active;

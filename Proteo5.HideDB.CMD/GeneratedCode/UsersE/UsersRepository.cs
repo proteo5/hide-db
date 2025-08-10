@@ -5,10 +5,8 @@ using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Linq;
-using Proteo5.HideDB.Generated.Models;
-using Proteo5.HideDB.Generated.Repositories;
 
-namespace Proteo5.HideDB.Generated.Repositories
+namespace Proteo5.HideDB.Generated.UsersE
 {
     /// <summary>
     /// Repositorio para la entidad Users
@@ -74,7 +72,6 @@ VALUES (@Username, @PasswordHash, @Email, @FirstName, @LastName, @status);
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Update an existing user
         /// </summary>
@@ -136,7 +133,6 @@ WHERE Id = @Id;
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Delete a user by ID
         /// </summary>
@@ -172,7 +168,6 @@ WHERE Id = @Id;
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Get all users ordered by creation date
         /// </summary>
@@ -224,7 +219,6 @@ ORDER BY CreatedAt DESC;
                 return result;
             }
         }
-
         /// <summary>
         /// Get a user by ID
         /// </summary>
@@ -276,7 +270,6 @@ WHERE Id = @Id;
                 return null;
             }
         }
-
         /// <summary>
         /// Get a user by username
         /// </summary>
@@ -328,7 +321,6 @@ WHERE Username = @Username;
                 return null;
             }
         }
-
         /// <summary>
         /// Get users filtered by status
         /// </summary>
@@ -384,7 +376,6 @@ ORDER BY CreatedAt DESC;
                 return result;
             }
         }
-
         /// <summary>
         /// Get count of active users
         /// </summary>
@@ -422,7 +413,6 @@ WHERE status = 'active';
                 return result == DBNull.Value ? null : result;
             }
         }
-
         /// <summary>
         /// Advanced user search
         /// </summary>
@@ -496,7 +486,6 @@ ORDER BY CreatedAt DESC;";
                 return result;
             }
         }
-
         private UsersModel MapToModel(IDataReader reader)
         {
             return new UsersModel

@@ -5,10 +5,8 @@ using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Linq;
-using Proteo5.HideDB.Generated.Models;
-using Proteo5.HideDB.Generated.Repositories;
 
-namespace Proteo5.HideDB.Generated.Repositories
+namespace Proteo5.HideDB.Generated.RolesE
 {
     /// <summary>
     /// Repositorio para la entidad Roles
@@ -68,7 +66,6 @@ VALUES (@Name, @Description, @Status);
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Update an existing role
         /// </summary>
@@ -118,7 +115,6 @@ WHERE Id = @Id;
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Delete a role by ID
         /// </summary>
@@ -154,7 +150,6 @@ WHERE Id = @Id;
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Get all roles ordered by name
         /// </summary>
@@ -206,7 +201,6 @@ ORDER BY Name ASC;
                 return result;
             }
         }
-
         /// <summary>
         /// Get a role by ID
         /// </summary>
@@ -258,7 +252,6 @@ WHERE Id = @Id;
                 return null;
             }
         }
-
         /// <summary>
         /// Get a role by name
         /// </summary>
@@ -310,7 +303,6 @@ WHERE Name = @Name;
                 return null;
             }
         }
-
         /// <summary>
         /// Get all roles by status
         /// </summary>
@@ -366,7 +358,6 @@ ORDER BY Name ASC;
                 return result;
             }
         }
-
         /// <summary>
         /// Get all active roles
         /// </summary>
@@ -420,7 +411,6 @@ ORDER BY Name ASC;
                 return result;
             }
         }
-
         /// <summary>
         /// Get count of active roles
         /// </summary>
@@ -458,7 +448,6 @@ WHERE Status = 'active';
                 return result == DBNull.Value ? null : result;
             }
         }
-
         /// <summary>
         /// Update role status
         /// </summary>
@@ -500,7 +489,6 @@ WHERE Id = @Id;
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Activate a role
         /// </summary>
@@ -540,7 +528,6 @@ WHERE Id = @Id;
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Deactivate a role
         /// </summary>
@@ -580,7 +567,6 @@ WHERE Id = @Id;
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         /// <summary>
         /// Archive a role
         /// </summary>
@@ -618,7 +604,6 @@ WHERE Id = @Id;";
                 return await command.ExecuteNonQueryAsync();
             }
         }
-
         private RolesModel MapToModel(IDataReader reader)
         {
             return new RolesModel

@@ -22,8 +22,8 @@ namespace Proteo5.HideDB.Lib.Generators
             }
             sb.AppendLine();
             
-            // Namespace
-            sb.AppendLine($"namespace {config.Namespace}.Models");
+            // Namespace - Updated for entity-first structure
+            sb.AppendLine($"namespace {config.Namespace}.{entityDef.Entity}E");
             sb.AppendLine("{");
             
             // XML Documentation

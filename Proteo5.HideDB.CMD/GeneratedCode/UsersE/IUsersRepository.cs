@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Proteo5.HideDB.Generated.Models;
 
-namespace Proteo5.HideDB.Generated.Repositories
+namespace Proteo5.HideDB.Generated.UsersE
 {
     /// <summary>
     /// Interfaz del repositorio para Users
