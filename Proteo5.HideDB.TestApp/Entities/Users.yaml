@@ -1,0 +1,85 @@
+# Test Users Entity for Source Generator Demo
+entity: "Users"
+entityversion: "1"
+version: "1.0"
+description: "User management entity for testing Source Generators"
+
+fields:
+  - name: "Id"
+    type: "int"
+    primaryKey: true
+    autoIncrement: true
+    required: true
+    description: "Unique user identifier"
+  - name: "Username"
+    type: "string"
+    maxLength: 50
+    required: true
+    description: "Unique username"
+  - name: "Email"
+    type: "string"
+    maxLength: 100
+    required: true
+    description: "Email address"
+  - name: "FirstName"
+    type: "string"
+    maxLength: 50
+    nullable: true
+    description: "User's first name"
+  - name: "LastName"
+    type: "string"
+    maxLength: 50
+    nullable: true
+    description: "User's last name"
+  - name: "IsActive"
+    type: "bool"
+    required: true
+    description: "Whether the user is active"
+  - name: "CreatedAt"
+    type: "DateTime"
+    required: true
+    description: "Creation timestamp"
+
+statements:
+  - name: "Insert"
+    type: "Insert"
+    return: "nothing"
+    description: "Create a new user"
+    sql: |
+      INSERT INTO Users (Username, Email, FirstName, LastName, IsActive, CreatedAt)
+      VALUES (@Username, @Email, @FirstName, @LastName, @IsActive, @CreatedAt);
+  
+  - name: "GetAll"
+    type: "Select"
+    return: "many"
+    description: "Get all users"
+    sql: |
+      SELECT Id, Username, Email, FirstName, LastName, IsActive, CreatedAt
+      FROM Users
+      ORDER BY CreatedAt DESC;
+  
+  - name: "GetById"
+    type: "Select"
+    return: "one"
+    description: "Get user by ID"
+    sql: |
+      SELECT Id, Username, Email, FirstName, LastName, IsActive, CreatedAt
+      FROM Users
+      WHERE Id = @Id;
+  
+  - name: "Update"
+    type: "Update"
+    return: "nothing"
+    description: "Update user information"
+    sql: |
+      UPDATE Users 
+      SET Username = @Username, Email = @Email, FirstName = @FirstName, 
+          LastName = @LastName, IsActive = @IsActive
+      WHERE Id = @Id;
+  
+  - name: "DeleteById"
+    type: "Delete"
+    return: "nothing"
+    description: "Delete user by ID"
+    sql: |
+      DELETE FROM Users WHERE Id = @Id;

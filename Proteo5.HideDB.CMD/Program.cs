@@ -14,8 +14,8 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        Console.WriteLine("🚀 Proteo5.HideDB - YAML DSL Generator");
-        Console.WriteLine("=====================================\n");
+        Console.WriteLine("[START] Proteo5.HideDB - YAML DSL Generator with Roslyn Source Generators");
+        Console.WriteLine("========================================================================\n");
 
         try
         {
@@ -24,19 +24,153 @@ class Program
             {
                 switch (args[0].ToLower())
                 {
-                    case "test":
-                        Console.WriteLine("🧪 Test mode detected. Generating code and preparing test...");
-                        await RunTestMode();
+                    case "generate":
+                        Console.WriteLine("[MODE] Manual generation mode...");
+                        await RunGenerationMode();
                         return;
-                    case "directtest":
-                        Console.WriteLine("🔬 Running direct library test...");
-                        await DirectTest.RunDirectTest();
+                    case "watch":
+                        Console.WriteLine("[MODE] File watching mode (legacy)...");
+                        await RunWatchMode();
+                        return;
+                    case "help":
+                    case "--help":
+                    case "-h":
+                        ShowHelp();
                         return;
                 }
             }
 
+            // Default behavior: Show information about source generators
+            ShowSourceGeneratorInfo();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Fatal error: {ex.Message}");
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+        }
+    }
+
+    static void ShowSourceGeneratorInfo()
+    {
+        Console.WriteLine("[INFO] This project now uses Roslyn Source Generators for real-time code generation!");
+        Console.WriteLine();
+        Console.WriteLine("🚀 How it works:");
+        Console.WriteLine("  1. Add YAML files to your project as AdditionalFiles");
+        Console.WriteLine("  2. Build your project (dotnet build)");
+        Console.WriteLine("  3. Generated code appears automatically in your IDE");
+        Console.WriteLine("  4. Enjoy real-time IntelliSense for generated classes!");
+        Console.WriteLine();
+        Console.WriteLine("📁 Project Structure:");
+        Console.WriteLine("  YourProject/");
+        Console.WriteLine("  ├── Entities/");
+        Console.WriteLine("  │   ├── Users.yaml");
+        Console.WriteLine("  │   └── Products.yaml");
+        Console.WriteLine("  └── YourProject.csproj");
+        Console.WriteLine();
+        Console.WriteLine("🔧 Project Configuration Required:");
+        Console.WriteLine("  <ItemGroup>");
+        Console.WriteLine("    <PackageReference Include=\"Proteo5.HideDB.SourceGenerator\" Version=\"1.0.0\">");
+        Console.WriteLine("      <PrivateAssets>all</PrivateAssets>");
+        Console.WriteLine("      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>");
+        Console.WriteLine("    </PackageReference>");
+        Console.WriteLine("  </ItemGroup>");
+        Console.WriteLine();
+        Console.WriteLine("  <ItemGroup>");
+        Console.WriteLine("    <AdditionalFiles Include=\"Entities\\**\\*.yaml\" />");
+        Console.WriteLine("  </ItemGroup>");
+        Console.WriteLine();
+        Console.WriteLine("💡 Available Commands:");
+        Console.WriteLine("  dotnet run generate  - Manual generation (legacy mode)");
+        Console.WriteLine("  dotnet run watch     - File watching (legacy mode)");
+        Console.WriteLine("  dotnet run help      - Show this help");
+        Console.WriteLine();
+        Console.WriteLine("✨ With Source Generators, you no longer need to run this tool manually!");
+        Console.WriteLine("   Just build your project and the code is generated automatically.");
+    }
+
+    static void ShowHelp()
+    {
+        Console.WriteLine("Proteo5.HideDB - YAML DSL Code Generator");
+        Console.WriteLine("==========================================");
+        Console.WriteLine();
+        Console.WriteLine("USAGE:");
+        Console.WriteLine("  dotnet run [command]");
+        Console.WriteLine();
+        Console.WriteLine("COMMANDS:");
+        Console.WriteLine("  (no args)            Show Source Generator information");
+        Console.WriteLine("  generate             Run manual code generation (legacy)");
+        Console.WriteLine("  watch               Start file watching mode (legacy)");
+        Console.WriteLine("  help, --help, -h    Show this help");
+        Console.WriteLine();
+        Console.WriteLine("EXAMPLES:");
+        Console.WriteLine("  dotnet run                    # Show info about Source Generators");
+        Console.WriteLine("  dotnet run generate           # Manual generation");
+        Console.WriteLine("  dotnet run watch             # Legacy file watching");
+        Console.WriteLine();
+        Console.WriteLine("For more information, visit: https://github.com/your-username/hide-db");
+    }
+
+    static async Task RunGenerationMode()
+    {
+        try
+        {
+            Console.WriteLine("[INFO] Running manual generation (legacy mode)...");
+            
+            // Configure host for generation
+            var host = CreateHostBuilder(new string[0]).Build();
+            var config = host.Services.GetRequiredService<GeneratorConfig>();
+            
+            // Create and configure generator
+            var generator = new YamlDslGenerator(config, host.Services.GetRequiredService<ILogger<YamlDslGenerator>>());
+            
+            // Create example file if it doesn't exist
+            await CreateExampleYamlFile(config.YamlPath);
+            
+            // Generate code once
+            Console.WriteLine("[GENERATE] Processing YAML files...");
+            generator.StartWatching();
+            await Task.Delay(3000); // Wait for code generation
+            generator.Stop();
+            
+            // Verify code was generated
+            var modelsPath = Path.Combine(config.OutputPath, "Models", "UsersModel.cs");
+            var repoPath = Path.Combine(config.OutputPath, "Repositories", "UsersRepository.cs");
+            
+            if (File.Exists(modelsPath) && File.Exists(repoPath))
+            {
+                Console.WriteLine("[SUCCESS] Code generated successfully!");
+                Console.WriteLine("\n[FILES] Generated files:");
+                Console.WriteLine($"• {modelsPath}");
+                Console.WriteLine($"• {repoPath}");
+                Console.WriteLine($"• {Path.Combine(config.OutputPath, "Repositories", "IUsersRepository.cs")}");
+                Console.WriteLine($"• {Path.Combine(config.SqlOutputPath, "Users_CreateTable.sql")}");
+                
+                Console.WriteLine("\n[RECOMMENDATION] Consider using Roslyn Source Generators for real-time generation!");
+                Console.WriteLine("                  Run 'dotnet run' (no arguments) for setup instructions.");
+            }
+            else
+            {
+                Console.WriteLine("[ERROR] Could not generate code. Check YAML files and configuration.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Error in generation mode: {ex.Message}");
+        }
+    }
+
+    static async Task RunWatchMode()
+    {
+        try
+        {
+            Console.WriteLine("[INFO] Starting legacy file watching mode...");
+            Console.WriteLine("[RECOMMENDATION] Consider using Roslyn Source Generators instead!");
+            Console.WriteLine("                  Run 'dotnet run' (no arguments) for setup instructions.");
+            Console.WriteLine();
+            
             // Configure host
-            var host = CreateHostBuilder(args).Build();
+            var host = CreateHostBuilder(new string[0]).Build();
             
             // Get services
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
@@ -53,11 +187,9 @@ class Program
             // Start watching
             generator.StartWatching();
             
-            logger.LogInformation("🔍 Generator started. Press 'q' to exit...");
-            Console.WriteLine("\nAvailable commands:");
-            Console.WriteLine("• dotnet run test      - Generate code and show test example");
-            Console.WriteLine("• dotnet run directtest - Run direct database test");
-            Console.WriteLine("• q                     - Exit\n");
+            logger.LogInformation("[READY] Generator started. Press 'q' to exit...");
+            Console.WriteLine("\nFile watcher is active. Monitoring YAML files for changes...");
+            Console.WriteLine("Press 'q' to quit\n");
             
             // Wait for user input
             ConsoleKey key;
@@ -68,232 +200,12 @@ class Program
             
             // Cleanup
             generator.Stop();
-            logger.LogInformation("👋 Generator stopped. See you later!");
+            logger.LogInformation("[EXIT] Generator stopped.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Fatal error: {ex.Message}");
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
+            Console.WriteLine($"[ERROR] Error in watch mode: {ex.Message}");
         }
-    }
-
-    static async Task RunTestMode()
-    {
-        try
-        {
-            // Configure host for test
-            var host = CreateHostBuilder(new string[0]).Build();
-            var config = host.Services.GetRequiredService<GeneratorConfig>();
-            
-            // Create and configure generator
-            var generator = new YamlDslGenerator(config, host.Services.GetRequiredService<ILogger<YamlDslGenerator>>());
-            
-            // Create example file if it doesn't exist
-            await CreateExampleYamlFile(config.YamlPath);
-            
-            // Generate code
-            Console.WriteLine("Generating code...");
-            generator.StartWatching();
-            await Task.Delay(3000); // Wait for code generation
-            generator.Stop();
-            
-            // Verify code was generated
-            var modelsPath = Path.Combine(config.OutputPath, "Models", "UsersModel.cs");
-            var repoPath = Path.Combine(config.OutputPath, "Repositories", "UsersRepository.cs");
-            
-            if (File.Exists(modelsPath) && File.Exists(repoPath))
-            {
-                Console.WriteLine("✅ Code generated successfully!");
-                Console.WriteLine("\n📄 Generated files:");
-                Console.WriteLine($"• {modelsPath}");
-                Console.WriteLine($"• {repoPath}");
-                Console.WriteLine($"• {Path.Combine(config.OutputPath, "Repositories", "IUsersRepository.cs")}");
-                Console.WriteLine($"• {Path.Combine(config.SqlOutputPath, "Users_CreateTable.sql")}");
-                
-                Console.WriteLine("\n🧪 To test the library:");
-                Console.WriteLine("1. Run: dotnet run directtest");
-                Console.WriteLine("2. Or copy the content from TestExample.cs for a custom test");
-                
-                await CreateTestExample();
-            }
-            else
-            {
-                Console.WriteLine("❌ Error: Could not generate code");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ Error in test mode: {ex.Message}");
-        }
-    }
-
-    static async Task CreateTestExample()
-    {
-        var testCode = @"
-// Complete test example for the generated library
-using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Proteo5.HideDB.Generated.Repositories;
-using Proteo5.HideDB.Generated.Models;
-using Microsoft.Data.SqlClient;
-
-class TestRunner
-{
-    static async Task Main()
-    {
-        Console.WriteLine(""🧪 GENERATED LIBRARY TEST"");
-        Console.WriteLine(""========================\n"");
-        
-        try
-        {
-            // 1. Configuration
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile(""appsettings.json"")
-                .Build();
-            var connectionString = configuration.GetConnectionString(""DefaultConnection:ConnectionString"");
-            
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                Console.WriteLine(""❌ Connection string not found"");
-                return;
-            }
-            
-            Console.WriteLine(""✅ Connection string configured"");
-            
-            // 2. Create repository
-            var usersRepo = new UsersRepository(connectionString);
-            Console.WriteLine(""✅ UsersRepository created"");
-            
-            // 3. Create table (using direct SQL)
-            await CreateUsersTable(connectionString);
-            
-            // 4. Insertion test
-            Console.WriteLine(""\n📝 INSERTING USERS..."");
-            var testUsers = new[]
-            {
-                new { Username = ""admin"", Password = ""hash123"", Email = ""admin@test.com"", FirstName = ""Admin"", LastName = ""User"", Status = ""active"" },
-                new { Username = ""john"", Password = ""hash456"", Email = ""john@test.com"", FirstName = ""John"", LastName = ""Doe"", Status = ""active"" },
-                new { Username = ""jane"", Password = ""hash789"", Email = ""jane@test.com"", FirstName = ""Jane"", LastName = ""Smith"", Status = ""inactive"" }
-            };
-            
-            foreach (var user in testUsers)
-            {
-                await usersRepo.InsertAsync(user.Username, user.Password, user.Email, 
-                                          user.FirstName, user.LastName, user.Status);
-                Console.WriteLine($""✅ {user.Username} inserted"");
-            }
-            
-            // 5. Query test
-            Console.WriteLine(""\n📋 QUERYING USERS..."");
-            var users = await usersRepo.GetAllAsync();
-            Console.WriteLine($""📊 Total users: {users.Count}"");
-            
-            foreach (var user in users)
-            {
-                Console.WriteLine($""👤 ID: {user.Id}, Username: {user.Username}, Email: {user.Email}"");
-            }
-            
-            // 6. Search by ID test
-            Console.WriteLine(""\n🔍 SEARCHING USER BY ID..."");
-            var user1 = await usersRepo.GetByIdAsync(1);
-            if (user1 != null)
-            {
-                Console.WriteLine($""✅ User found: {user1.Username} - {user1.Email}"");
-            }
-            
-            // 7. Search by username test
-            Console.WriteLine(""\n🔍 SEARCHING USER BY USERNAME..."");
-            var userByName = await usersRepo.GetByUserAsync(""john"");
-            if (userByName != null)
-            {
-                Console.WriteLine($""✅ User found: {userByName.Username} - {userByName.Email}"");
-            }
-            
-            // 8. Update test
-            if (user1 != null)
-            {
-                Console.WriteLine(""\n✏️ UPDATING USER..."");
-                await usersRepo.UpdateAsync(""admin_updated"", ""newhash"", ""admin.new@test.com"",
-                                           ""Admin Updated"", ""User Modified"", ""inactive"", user1.Id);
-                
-                var updatedUser = await usersRepo.GetByIdAsync(user1.Id);
-                if (updatedUser != null)
-                {
-                    Console.WriteLine($""✅ User updated: {updatedUser.Username} - {updatedUser.Email}"");
-                }
-            }
-            
-            // 9. Query by status test
-            Console.WriteLine(""\n🔍 QUERYING ACTIVE USERS..."");
-            var activeUsers = await usersRepo.GetByStatusAsync(""active"");
-            Console.WriteLine($""📊 Active users: {activeUsers.Count}"");
-            
-            // 10. Count test
-            Console.WriteLine(""\n📊 COUNTING ACTIVE USERS..."");
-            var activeCount = await usersRepo.GetActiveCountAsync();
-            Console.WriteLine($""✅ Active users count: {activeCount}"");
-            
-            // 11. Cleanup - Delete users
-            Console.WriteLine(""\n🗑️ CLEANING UP DATA..."");
-            foreach (var user in users)
-            {
-                await usersRepo.DeleteByIdAsync(user.Id);
-            }
-            Console.WriteLine(""✅ Users deleted"");
-            
-            // 12. Drop table
-            await DropUsersTable(connectionString);
-            
-            Console.WriteLine(""\n✅ TEST COMPLETED SUCCESSFULLY!"");
-            Console.WriteLine(""🎉 The library works perfectly!"");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($""\n❌ ERROR: {ex.Message}"");
-        }
-    }
-    
-    static async Task CreateUsersTable(string connectionString)
-    {
-        var sql = @""
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' AND xtype='U')
-        BEGIN
-            CREATE TABLE Users (
-                Id INT IDENTITY(1,1) PRIMARY KEY,
-                Username NVARCHAR(50) NOT NULL,
-                PasswordHash NVARCHAR(255) NOT NULL,
-                Email NVARCHAR(100) NOT NULL,
-                FirstName NVARCHAR(50) NULL,
-                LastName NVARCHAR(50) NULL,
-                status NVARCHAR(50) NULL DEFAULT 'active',
-                CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
-                UpdatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE()
-            )
-            PRINT 'Users table created'
-        END"";
-        
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand(sql, connection);
-        await connection.OpenAsync();
-        await command.ExecuteNonQueryAsync();
-        Console.WriteLine(""✅ Users table prepared"");
-    }
-    
-    static async Task DropUsersTable(string connectionString)
-    {
-        var sql = ""DROP TABLE IF EXISTS Users"";
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand(sql, connection);
-        await connection.OpenAsync();
-        await command.ExecuteNonQueryAsync();
-        Console.WriteLine(""✅ Users table dropped"");
-    }
-}";
-
-        await File.WriteAllTextAsync("TestExample.cs", testCode);
-        Console.WriteLine("✅ TestExample.cs file created with complete test");
     }
 
     static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -326,7 +238,7 @@ class TestRunner
         {
             Directory.CreateDirectory(yamlPath);
             
-            var exampleContent = @"# Description: This file defines the Users entity for the Proteo5.HideDB.CMD project.
+            var exampleContent = @"# Description: This file defines the Users entity for the Proteo5.HideDB project.
 entity: ""Users""
 entityversion: ""1""
 version: ""1.0""
@@ -357,10 +269,12 @@ fields:
   - name: ""FirstName""
     type: ""string""
     maxLength: 50
+    nullable: true
     description: ""User's first name""
   - name: ""LastName""
     type: ""string""
     maxLength: 50
+    nullable: true
     description: ""User's last name""
   - name: ""status""
     type: ""string""
@@ -456,28 +370,10 @@ statements:
     sql: |
       SELECT COUNT(*)
       FROM Users
-      WHERE status = 'active';
-  - name: ""GetByEmailAndStatus""
-    type: ""Select""
-    return: ""many""
-    description: ""Advanced user search""
-    sql: |
-      SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt,
-             CONCAT(FirstName, ' ',
-             CASE 
-               WHEN status = 'active' THEN 'Active'
-               WHEN status = 'inactive' THEN 'Inactive'
-               WHEN status = 'banned' THEN 'Banned'
-               ELSE 'Unknown'
-             END as Status
-      FROM Users 
-      WHERE (@searchTerm IS NULL OR CONCAT(FirstName, ' ', LastName) LIKE CONCAT('%', @searchTerm, '%') 
-             OR Email LIKE CONCAT('%', @searchTerm, '%'))
-        AND (@statusFilter IS NULL OR status = @statusFilter)
-      ORDER BY CreatedAt DESC;";
+      WHERE status = 'active';";
 
             await File.WriteAllTextAsync(exampleFile, exampleContent);
-            Console.WriteLine($"📄 Example file created: {exampleFile}");
+            Console.WriteLine($"[FILE] Example file created: {exampleFile}");
         }
     }
 }
