@@ -2,7 +2,7 @@
   "profiles": {
     "Proteo5.HideDB.CMD": {
       "commandName": "Project",
-      "commandLineArgs": "test"
+      "commandLineArgs": "generate"
     }
   }
 }

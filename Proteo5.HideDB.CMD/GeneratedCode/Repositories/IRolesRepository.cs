@@ -13,22 +13,22 @@ namespace Proteo5.HideDB.Generated.Repositories
         /// <summary>
         /// Create a new role
         /// </summary>
-        int Insert(object Name, object Description, object IsActive);
+        int Insert(object Name, object Description, object Status);
 
         /// <summary>
         /// Create a new role (Async)
         /// </summary>
-        Task<int> InsertAsync(object Name, object Description, object IsActive);
+        Task<int> InsertAsync(object Name, object Description, object Status);
 
         /// <summary>
         /// Update an existing role
         /// </summary>
-        int Update(object Name, object Description, object IsActive, object Id);
+        int Update(object Name, object Description, object Status, object Id);
 
         /// <summary>
         /// Update an existing role (Async)
         /// </summary>
-        Task<int> UpdateAsync(object Name, object Description, object IsActive, object Id);
+        Task<int> UpdateAsync(object Name, object Description, object Status, object Id);
 
         /// <summary>
         /// Delete a role by ID
@@ -71,6 +71,16 @@ namespace Proteo5.HideDB.Generated.Repositories
         Task<RolesModel?> GetByNameAsync(object Name);
 
         /// <summary>
+        /// Get all roles by status
+        /// </summary>
+        List<RolesModel> GetByStatus(object Status);
+
+        /// <summary>
+        /// Get all roles by status (Async)
+        /// </summary>
+        Task<List<RolesModel>> GetByStatusAsync(object Status);
+
+        /// <summary>
         /// Get all active roles
         /// </summary>
         List<RolesModel> GetActive();
@@ -91,14 +101,44 @@ namespace Proteo5.HideDB.Generated.Repositories
         Task<object?> GetActiveCountAsync();
 
         /// <summary>
-        /// Activate or deactivate a role
+        /// Update role status
         /// </summary>
-        int SetActiveStatus(object IsActive, object Id);
+        int SetStatus(object Status, object Id);
 
         /// <summary>
-        /// Activate or deactivate a role (Async)
+        /// Update role status (Async)
         /// </summary>
-        Task<int> SetActiveStatusAsync(object IsActive, object Id);
+        Task<int> SetStatusAsync(object Status, object Id);
+
+        /// <summary>
+        /// Activate a role
+        /// </summary>
+        int ActivateRole(object Id);
+
+        /// <summary>
+        /// Activate a role (Async)
+        /// </summary>
+        Task<int> ActivateRoleAsync(object Id);
+
+        /// <summary>
+        /// Deactivate a role
+        /// </summary>
+        int DeactivateRole(object Id);
+
+        /// <summary>
+        /// Deactivate a role (Async)
+        /// </summary>
+        Task<int> DeactivateRoleAsync(object Id);
+
+        /// <summary>
+        /// Archive a role
+        /// </summary>
+        int ArchiveRole(object Id);
+
+        /// <summary>
+        /// Archive a role (Async)
+        /// </summary>
+        Task<int> ArchiveRoleAsync(object Id);
 
     }
 }

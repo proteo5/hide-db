@@ -24,12 +24,14 @@ fields:
     required: false
     nullable: true
     description: "Role description"
-  - name: "IsActive"
-    type: "bool"
-    defaultValue: "true"
+  - name: "Status"
+    type: "string"
+    maxLength: 20
+    defaultValue: "active"
+    catalog: "statuses"
     required: true
     nullable: false
-    description: "Indicates if the role is active"
+    description: "Role status"
   - name: "CreatedAt"
     type: "DateTime"
     defaultValue: "CURRENT_TIMESTAMP_UTC"
@@ -43,14 +45,25 @@ fields:
     nullable: false
     description: "Last update date"
 
+catalogs:
+  statuses:
+    - name: "active"
+      description: "Active role"
+    - name: "inactive"
+      description: "Inactive role"
+    - name: "pending"
+      description: "Pending approval"
+    - name: "archived"
+      description: "Archived role"
+
 statements:
   - name: "Insert"
     type: "Insert"
     return: "nothing"
     description: "Create a new role"
     sql: |
-      INSERT INTO Roles (Name, Description, IsActive)
-      VALUES (@Name, @Description, @IsActive);
+      INSERT INTO Roles (Name, Description, Status)
+      VALUES (@Name, @Description, @Status);
   - name: "Update"
     type: "Update"
     return: "nothing"
@@ -59,8 +72,8 @@ statements:
       UPDATE Roles 
       SET Name = @Name,
           Description = @Description,
-          IsActive = @IsActive,
-          UpdatedAt = CURRENT_TIMESTAMP_UTC
+          Status = @Status,
+          UpdatedAt = GETUTCDATE()
       WHERE Id = @Id;
   - name: "DeleteById"
     type: "Delete"
@@ -74,7 +87,7 @@ statements:
     return: "many"
     description: "Get all roles ordered by name"
     sql: |
-      SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+      SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
       FROM Roles
       ORDER BY Name ASC;
   - name: "GetById"
@@ -82,7 +95,7 @@ statements:
     return: "one"
     description: "Get a role by ID"
     sql: |
-      SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+      SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
       FROM Roles
       WHERE Id = @Id;
   - name: "GetByName"
@@ -90,17 +103,26 @@ statements:
     return: "one"
     description: "Get a role by name"
     sql: |
-      SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+      SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
       FROM Roles
       WHERE Name = @Name;
+  - name: "GetByStatus"
+    type: "Select"
+    return: "many"
+    description: "Get all roles by status"
+    sql: |
+      SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
+      FROM Roles
+      WHERE Status = @Status
+      ORDER BY Name ASC;
   - name: "GetActive"
     type: "Select"
     return: "many"
     description: "Get all active roles"
     sql: |
-      SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+      SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
       FROM Roles
-      WHERE IsActive = 1
+      WHERE Status = 'active'
       ORDER BY Name ASC;
   - name: "GetActiveCount"
     type: "Select"
@@ -109,13 +131,40 @@ statements:
     sql: |
       SELECT COUNT(*)
       FROM Roles
-      WHERE IsActive = 1;
-  - name: "SetActiveStatus"
+      WHERE Status = 'active';
+  - name: "SetStatus"
     type: "Update"
     return: "nothing"
-    description: "Activate or deactivate a role"
+    description: "Update role status"
     sql: |
       UPDATE Roles 
-      SET IsActive = @IsActive,
-          UpdatedAt = CURRENT_TIMESTAMP_UTC
+      SET Status = @Status,
+          UpdatedAt = GETUTCDATE()
+      WHERE Id = @Id;
+  - name: "ActivateRole"
+    type: "Update"
+    return: "nothing"
+    description: "Activate a role"
+    sql: |
+      UPDATE Roles 
+      SET Status = 'active',
+          UpdatedAt = GETUTCDATE()
+      WHERE Id = @Id;
+  - name: "DeactivateRole"
+    type: "Update"
+    return: "nothing"
+    description: "Deactivate a role"
+    sql: |
+      UPDATE Roles 
+      SET Status = 'inactive',
+          UpdatedAt = GETUTCDATE()
+      WHERE Id = @Id;
+  - name: "ArchiveRole"
+    type: "Update"
+    return: "nothing"
+    description: "Archive a role"
+    sql: |
+      UPDATE Roles 
+      SET Status = 'archived',
+          UpdatedAt = GETUTCDATE()
       WHERE Id = @Id;

@@ -32,19 +32,19 @@ namespace Proteo5.HideDB.Generated.Repositories
         /// <summary>
         /// Create a new role
         /// </summary>
-        public int Insert(object Name, object Description, object IsActive)
+        public int Insert(object Name, object Description, object Status)
         {
             using (var connection = new SqlConnection(_connectionString))
             using (var command = new SqlCommand())
             {
                 connection.Open();
                 command.Connection = connection;
-                command.CommandText = @"INSERT INTO Roles (Name, Description, IsActive)
-VALUES (@Name, @Description, @IsActive);
+                command.CommandText = @"INSERT INTO Roles (Name, Description, Status)
+VALUES (@Name, @Description, @Status);
 ";
                 command.Parameters.AddWithValue("@Name", Name ?? DBNull.Value);
                 command.Parameters.AddWithValue("@Description", Description ?? DBNull.Value);
-                command.Parameters.AddWithValue("@IsActive", IsActive ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Status", Status ?? DBNull.Value);
                 return command.ExecuteNonQuery();
             }
         }
@@ -52,19 +52,19 @@ VALUES (@Name, @Description, @IsActive);
         /// <summary>
         /// Create a new role (Async)
         /// </summary>
-        public async Task<int> InsertAsync(object Name, object Description, object IsActive)
+        public async Task<int> InsertAsync(object Name, object Description, object Status)
         {
             using (var connection = new SqlConnection(_connectionString))
             using (var command = new SqlCommand())
             {
                 await connection.OpenAsync();
                 command.Connection = connection;
-                command.CommandText = @"INSERT INTO Roles (Name, Description, IsActive)
-VALUES (@Name, @Description, @IsActive);
+                command.CommandText = @"INSERT INTO Roles (Name, Description, Status)
+VALUES (@Name, @Description, @Status);
 ";
                 command.Parameters.AddWithValue("@Name", Name ?? DBNull.Value);
                 command.Parameters.AddWithValue("@Description", Description ?? DBNull.Value);
-                command.Parameters.AddWithValue("@IsActive", IsActive ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Status", Status ?? DBNull.Value);
                 return await command.ExecuteNonQueryAsync();
             }
         }
@@ -72,7 +72,7 @@ VALUES (@Name, @Description, @IsActive);
         /// <summary>
         /// Update an existing role
         /// </summary>
-        public int Update(object Name, object Description, object IsActive, object Id)
+        public int Update(object Name, object Description, object Status, object Id)
         {
             using (var connection = new SqlConnection(_connectionString))
             using (var command = new SqlCommand())
@@ -82,13 +82,13 @@ VALUES (@Name, @Description, @IsActive);
                 command.CommandText = @"UPDATE Roles 
 SET Name = @Name,
     Description = @Description,
-    IsActive = @IsActive,
-    UpdatedAt = CURRENT_TIMESTAMP_UTC
+    Status = @Status,
+    UpdatedAt = GETUTCDATE()
 WHERE Id = @Id;
 ";
                 command.Parameters.AddWithValue("@Name", Name ?? DBNull.Value);
                 command.Parameters.AddWithValue("@Description", Description ?? DBNull.Value);
-                command.Parameters.AddWithValue("@IsActive", IsActive ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Status", Status ?? DBNull.Value);
                 command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
                 return command.ExecuteNonQuery();
             }
@@ -97,7 +97,7 @@ WHERE Id = @Id;
         /// <summary>
         /// Update an existing role (Async)
         /// </summary>
-        public async Task<int> UpdateAsync(object Name, object Description, object IsActive, object Id)
+        public async Task<int> UpdateAsync(object Name, object Description, object Status, object Id)
         {
             using (var connection = new SqlConnection(_connectionString))
             using (var command = new SqlCommand())
@@ -107,13 +107,13 @@ WHERE Id = @Id;
                 command.CommandText = @"UPDATE Roles 
 SET Name = @Name,
     Description = @Description,
-    IsActive = @IsActive,
-    UpdatedAt = CURRENT_TIMESTAMP_UTC
+    Status = @Status,
+    UpdatedAt = GETUTCDATE()
 WHERE Id = @Id;
 ";
                 command.Parameters.AddWithValue("@Name", Name ?? DBNull.Value);
                 command.Parameters.AddWithValue("@Description", Description ?? DBNull.Value);
-                command.Parameters.AddWithValue("@IsActive", IsActive ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Status", Status ?? DBNull.Value);
                 command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
                 return await command.ExecuteNonQueryAsync();
             }
@@ -165,7 +165,7 @@ WHERE Id = @Id;
             {
                 connection.Open();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
 FROM Roles
 ORDER BY Name ASC;
 ";
@@ -191,7 +191,7 @@ ORDER BY Name ASC;
             {
                 await connection.OpenAsync();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
 FROM Roles
 ORDER BY Name ASC;
 ";
@@ -217,7 +217,7 @@ ORDER BY Name ASC;
             {
                 connection.Open();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
 FROM Roles
 WHERE Id = @Id;
 ";
@@ -243,7 +243,7 @@ WHERE Id = @Id;
             {
                 await connection.OpenAsync();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
 FROM Roles
 WHERE Id = @Id;
 ";
@@ -269,7 +269,7 @@ WHERE Id = @Id;
             {
                 connection.Open();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
 FROM Roles
 WHERE Name = @Name;
 ";
@@ -295,7 +295,7 @@ WHERE Name = @Name;
             {
                 await connection.OpenAsync();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
 FROM Roles
 WHERE Name = @Name;
 ";
@@ -312,6 +312,62 @@ WHERE Name = @Name;
         }
 
         /// <summary>
+        /// Get all roles by status
+        /// </summary>
+        public List<RolesModel> GetByStatus(object Status)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
+FROM Roles
+WHERE Status = @Status
+ORDER BY Name ASC;
+";
+                command.Parameters.AddWithValue("@Status", Status ?? DBNull.Value);
+                var result = new List<RolesModel>();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(MapToModel(reader));
+                    }
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Get all roles by status (Async)
+        /// </summary>
+        public async Task<List<RolesModel>> GetByStatusAsync(object Status)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand())
+            {
+                await connection.OpenAsync();
+                command.Connection = connection;
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
+FROM Roles
+WHERE Status = @Status
+ORDER BY Name ASC;
+";
+                command.Parameters.AddWithValue("@Status", Status ?? DBNull.Value);
+                var result = new List<RolesModel>();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        result.Add(MapToModel(reader));
+                    }
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
         /// Get all active roles
         /// </summary>
         public List<RolesModel> GetActive()
@@ -321,9 +377,9 @@ WHERE Name = @Name;
             {
                 connection.Open();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
 FROM Roles
-WHERE IsActive = 1
+WHERE Status = 'active'
 ORDER BY Name ASC;
 ";
                 var result = new List<RolesModel>();
@@ -348,9 +404,9 @@ ORDER BY Name ASC;
             {
                 await connection.OpenAsync();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
+                command.CommandText = @"SELECT Id, Name, Description, Status, CreatedAt, UpdatedAt
 FROM Roles
-WHERE IsActive = 1
+WHERE Status = 'active'
 ORDER BY Name ASC;
 ";
                 var result = new List<RolesModel>();
@@ -377,7 +433,7 @@ ORDER BY Name ASC;
                 command.Connection = connection;
                 command.CommandText = @"SELECT COUNT(*)
 FROM Roles
-WHERE IsActive = 1;
+WHERE Status = 'active';
 ";
                 var result = command.ExecuteScalar();
                 return result == DBNull.Value ? null : result;
@@ -396,7 +452,7 @@ WHERE IsActive = 1;
                 command.Connection = connection;
                 command.CommandText = @"SELECT COUNT(*)
 FROM Roles
-WHERE IsActive = 1;
+WHERE Status = 'active';
 ";
                 var result = await command.ExecuteScalarAsync();
                 return result == DBNull.Value ? null : result;
@@ -404,9 +460,9 @@ WHERE IsActive = 1;
         }
 
         /// <summary>
-        /// Activate or deactivate a role
+        /// Update role status
         /// </summary>
-        public int SetActiveStatus(object IsActive, object Id)
+        public int SetStatus(object Status, object Id)
         {
             using (var connection = new SqlConnection(_connectionString))
             using (var command = new SqlCommand())
@@ -414,19 +470,20 @@ WHERE IsActive = 1;
                 connection.Open();
                 command.Connection = connection;
                 command.CommandText = @"UPDATE Roles 
-SET IsActive = @IsActive,
-    UpdatedAt = CURRENT_TIMESTAMP_UTC
-WHERE Id = @Id;";
-                command.Parameters.AddWithValue("@IsActive", IsActive ?? DBNull.Value);
+SET Status = @Status,
+    UpdatedAt = GETUTCDATE()
+WHERE Id = @Id;
+";
+                command.Parameters.AddWithValue("@Status", Status ?? DBNull.Value);
                 command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
                 return command.ExecuteNonQuery();
             }
         }
 
         /// <summary>
-        /// Activate or deactivate a role (Async)
+        /// Update role status (Async)
         /// </summary>
-        public async Task<int> SetActiveStatusAsync(object IsActive, object Id)
+        public async Task<int> SetStatusAsync(object Status, object Id)
         {
             using (var connection = new SqlConnection(_connectionString))
             using (var command = new SqlCommand())
@@ -434,10 +491,129 @@ WHERE Id = @Id;";
                 await connection.OpenAsync();
                 command.Connection = connection;
                 command.CommandText = @"UPDATE Roles 
-SET IsActive = @IsActive,
-    UpdatedAt = CURRENT_TIMESTAMP_UTC
+SET Status = @Status,
+    UpdatedAt = GETUTCDATE()
+WHERE Id = @Id;
+";
+                command.Parameters.AddWithValue("@Status", Status ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
+                return await command.ExecuteNonQueryAsync();
+            }
+        }
+
+        /// <summary>
+        /// Activate a role
+        /// </summary>
+        public int ActivateRole(object Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandText = @"UPDATE Roles 
+SET Status = 'active',
+    UpdatedAt = GETUTCDATE()
+WHERE Id = @Id;
+";
+                command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
+                return command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Activate a role (Async)
+        /// </summary>
+        public async Task<int> ActivateRoleAsync(object Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand())
+            {
+                await connection.OpenAsync();
+                command.Connection = connection;
+                command.CommandText = @"UPDATE Roles 
+SET Status = 'active',
+    UpdatedAt = GETUTCDATE()
+WHERE Id = @Id;
+";
+                command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
+                return await command.ExecuteNonQueryAsync();
+            }
+        }
+
+        /// <summary>
+        /// Deactivate a role
+        /// </summary>
+        public int DeactivateRole(object Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandText = @"UPDATE Roles 
+SET Status = 'inactive',
+    UpdatedAt = GETUTCDATE()
+WHERE Id = @Id;
+";
+                command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
+                return command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Deactivate a role (Async)
+        /// </summary>
+        public async Task<int> DeactivateRoleAsync(object Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand())
+            {
+                await connection.OpenAsync();
+                command.Connection = connection;
+                command.CommandText = @"UPDATE Roles 
+SET Status = 'inactive',
+    UpdatedAt = GETUTCDATE()
+WHERE Id = @Id;
+";
+                command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
+                return await command.ExecuteNonQueryAsync();
+            }
+        }
+
+        /// <summary>
+        /// Archive a role
+        /// </summary>
+        public int ArchiveRole(object Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand())
+            {
+                connection.Open();
+                command.Connection = connection;
+                command.CommandText = @"UPDATE Roles 
+SET Status = 'archived',
+    UpdatedAt = GETUTCDATE()
 WHERE Id = @Id;";
-                command.Parameters.AddWithValue("@IsActive", IsActive ?? DBNull.Value);
+                command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
+                return command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Archive a role (Async)
+        /// </summary>
+        public async Task<int> ArchiveRoleAsync(object Id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand())
+            {
+                await connection.OpenAsync();
+                command.Connection = connection;
+                command.CommandText = @"UPDATE Roles 
+SET Status = 'archived',
+    UpdatedAt = GETUTCDATE()
+WHERE Id = @Id;";
                 command.Parameters.AddWithValue("@Id", Id ?? DBNull.Value);
                 return await command.ExecuteNonQueryAsync();
             }
@@ -450,7 +626,7 @@ WHERE Id = @Id;";
                 Id = reader["Id"] == DBNull.Value ? default(int) : (int)reader["Id"],
                 Name = reader["Name"] == DBNull.Value ? string.Empty : (reader["Name"].ToString() ?? string.Empty),
                 Description = reader["Description"] == DBNull.Value ? null : reader["Description"].ToString(),
-                IsActive = reader["IsActive"] == DBNull.Value ? default(bool) : (bool)reader["IsActive"],
+                Status = reader["Status"] == DBNull.Value ? string.Empty : (reader["Status"].ToString() ?? string.Empty),
                 CreatedAt = reader["CreatedAt"] == DBNull.Value ? default(DateTime) : (DateTime)reader["CreatedAt"],
                 UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? default(DateTime) : (DateTime)reader["UpdatedAt"],
             };

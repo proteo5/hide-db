@@ -18,13 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Proteo5.HideDB.Lib\Proteo5.HideDB.Lib.csproj" />
-    <ProjectReference Include="..\Proteo5.HideDB.SourceGenerator\Proteo5.HideDB.SourceGenerator.csproj" 
-                      OutputItemType="Analyzer" 
-                      ReferenceOutputAssembly="false" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="Entities\**\*.yaml" />
   </ItemGroup>
 
   <ItemGroup>

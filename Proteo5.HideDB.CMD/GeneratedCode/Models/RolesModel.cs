@@ -34,10 +34,12 @@ namespace Proteo5.HideDB.Generated.Models
         public string? Description { get; set; }
 
         [Required]
+        [MaxLength(20)]
         /// <summary>
-        /// Indicates if the role is active
+        /// Role status
+        /// Catálogo: statuses
         /// </summary>
-        public bool IsActive { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         [Required]
         /// <summary>
