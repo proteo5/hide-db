@@ -11,92 +11,92 @@ namespace Proteo5.HideDB.Generated.Repositories
     public interface IRolesRepository
     {
         /// <summary>
-        /// Crea un nuevo rol
+        /// Create a new role
         /// </summary>
         int Insert(object Name, object Description, object IsActive);
 
         /// <summary>
-        /// Crea un nuevo rol (Async)
+        /// Create a new role (Async)
         /// </summary>
         Task<int> InsertAsync(object Name, object Description, object IsActive);
 
         /// <summary>
-        /// Actualiza un rol existente
+        /// Update an existing role
         /// </summary>
         int Update(object Name, object Description, object IsActive, object Id);
 
         /// <summary>
-        /// Actualiza un rol existente (Async)
+        /// Update an existing role (Async)
         /// </summary>
         Task<int> UpdateAsync(object Name, object Description, object IsActive, object Id);
 
         /// <summary>
-        /// Elimina un rol por ID
+        /// Delete a role by ID
         /// </summary>
         int DeleteById(object Id);
 
         /// <summary>
-        /// Elimina un rol por ID (Async)
+        /// Delete a role by ID (Async)
         /// </summary>
         Task<int> DeleteByIdAsync(object Id);
 
         /// <summary>
-        /// Obtiene todos los roles ordenados por nombre
+        /// Get all roles ordered by name
         /// </summary>
         List<RolesModel> GetAll();
 
         /// <summary>
-        /// Obtiene todos los roles ordenados por nombre (Async)
+        /// Get all roles ordered by name (Async)
         /// </summary>
         Task<List<RolesModel>> GetAllAsync();
 
         /// <summary>
-        /// Obtiene un rol por su ID
+        /// Get a role by ID
         /// </summary>
         RolesModel? GetById(object Id);
 
         /// <summary>
-        /// Obtiene un rol por su ID (Async)
+        /// Get a role by ID (Async)
         /// </summary>
         Task<RolesModel?> GetByIdAsync(object Id);
 
         /// <summary>
-        /// Obtiene un rol por su nombre
+        /// Get a role by name
         /// </summary>
         RolesModel? GetByName(object Name);
 
         /// <summary>
-        /// Obtiene un rol por su nombre (Async)
+        /// Get a role by name (Async)
         /// </summary>
         Task<RolesModel?> GetByNameAsync(object Name);
 
         /// <summary>
-        /// Obtiene todos los roles activos
+        /// Get all active roles
         /// </summary>
         List<RolesModel> GetActive();
 
         /// <summary>
-        /// Obtiene todos los roles activos (Async)
+        /// Get all active roles (Async)
         /// </summary>
         Task<List<RolesModel>> GetActiveAsync();
 
         /// <summary>
-        /// Obtiene el conteo de roles activos
+        /// Get count of active roles
         /// </summary>
         object? GetActiveCount();
 
         /// <summary>
-        /// Obtiene el conteo de roles activos (Async)
+        /// Get count of active roles (Async)
         /// </summary>
         Task<object?> GetActiveCountAsync();
 
         /// <summary>
-        /// Activa o desactiva un rol
+        /// Activate or deactivate a role
         /// </summary>
         int SetActiveStatus(object IsActive, object Id);
 
         /// <summary>
-        /// Activa o desactiva un rol (Async)
+        /// Activate or deactivate a role (Async)
         /// </summary>
         Task<int> SetActiveStatusAsync(object IsActive, object Id);
 

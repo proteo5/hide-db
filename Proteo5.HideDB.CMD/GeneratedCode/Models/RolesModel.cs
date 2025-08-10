@@ -6,7 +6,7 @@ namespace Proteo5.HideDB.Generated.Models
 {
     /// <summary>
     /// Modelo para la entidad Roles
-    /// Entidad para gesti�n de roles del sistema
+    /// Entity for system role management
     /// Generado automáticamente - Version: 1.0
     /// </summary>
     [Table("Roles")]
@@ -16,38 +16,38 @@ namespace Proteo5.HideDB.Generated.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         /// <summary>
-        /// Identificador �nico del rol
+        /// Unique role identifier
         /// </summary>
         public int Id { get; set; }
 
         [Required]
         [MaxLength(50)]
         /// <summary>
-        /// Nombre del rol
+        /// Role name
         /// </summary>
         public string Name { get; set; } = string.Empty;
 
         [MaxLength(255)]
         /// <summary>
-        /// Descripci�n del rol
+        /// Role description
         /// </summary>
         public string? Description { get; set; }
 
         [Required]
         /// <summary>
-        /// Indica si el rol est� activo
+        /// Indicates if the role is active
         /// </summary>
         public bool IsActive { get; set; }
 
         [Required]
         /// <summary>
-        /// Fecha de creaci�n
+        /// Creation date
         /// </summary>
         public DateTime CreatedAt { get; set; }
 
         [Required]
         /// <summary>
-        /// Fecha de �ltima actualizaci�n
+        /// Last update date
         /// </summary>
         public DateTime UpdatedAt { get; set; }
 

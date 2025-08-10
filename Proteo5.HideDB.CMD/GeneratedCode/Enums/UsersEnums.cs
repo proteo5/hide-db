@@ -9,23 +9,23 @@ namespace Proteo5.HideDB.Generated.Enums
     public enum UsersStatuses
     {
         /// <summary>
-        /// Usuario activo
+        /// Active user
         /// </summary>
-        [Description("Usuario activo")]
+        [Description("Active user")]
         Active = 0
 ,
 
         /// <summary>
-        /// Usuario inactivo
+        /// Inactive user
         /// </summary>
-        [Description("Usuario inactivo")]
+        [Description("Inactive user")]
         Inactive = 1
 ,
 
         /// <summary>
-        /// Usuario baneado
+        /// Banned user
         /// </summary>
-        [Description("Usuario baneado")]
+        [Description("Banned user")]
         Banned = 2
 
     }

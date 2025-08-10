@@ -6,19 +6,19 @@ using Microsoft.Data.SqlClient;
 namespace Proteo5.HideDB.CMD;
 
 /// <summary>
-/// Test ejecutable que compila con el código generado
-/// Para ejecutar: dotnet run directtest
+/// Executable test that compiles with the generated code
+/// To run: dotnet run directtest
 /// </summary>
 public static class DirectTest
 {
     public static async Task RunDirectTest()
     {
-        Console.WriteLine("\n?? EJECUTANDO TEST DIRECTO DE LA LIBRERÍA");
-        Console.WriteLine("=========================================\n");
+        Console.WriteLine("\n?? RUNNING DIRECT LIBRARY TEST");
+        Console.WriteLine("==============================\n");
 
         try
         {
-            // Obtener connection string
+            // Get connection string
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false)
                 .Build();
@@ -26,66 +26,66 @@ public static class DirectTest
             var connectionString = configuration.GetConnectionString("DefaultConnection:ConnectionString");
             if (string.IsNullOrEmpty(connectionString))
             {
-                Console.WriteLine("? No se pudo obtener la connection string del appsettings.json");
+                Console.WriteLine("? Could not get connection string from appsettings.json");
                 return;
             }
 
-            Console.WriteLine($"? Connection String obtenida");
-            WaitForKeyPress("Configuración inicial completada");
+            Console.WriteLine($"? Connection string obtained");
+            WaitForKeyPress("Initial configuration completed");
 
-            // Test básico de conexión
-            Console.WriteLine("\n1?? PROBANDO CONEXIÓN A BASE DE DATOS...");
+            // Basic connection test
+            Console.WriteLine("\n1?? TESTING DATABASE CONNECTION...");
             using (var testConnection = new SqlConnection(connectionString))
             {
                 await testConnection.OpenAsync();
-                Console.WriteLine("? Conexión exitosa a la base de datos");
+                Console.WriteLine("? Successful database connection");
             }
-            WaitForKeyPress("Prueba de conexión completada");
+            WaitForKeyPress("Connection test completed");
 
-            // Crear tabla de prueba
-            Console.WriteLine("\n2?? CREANDO TABLA DE PRUEBA...");
+            // Create test table
+            Console.WriteLine("\n2?? CREATING TEST TABLE...");
             await CreateTestTable(connectionString);
-            WaitForKeyPress("Tabla creada - Puedes verificar en la base de datos que existe la tabla 'TestUsers'");
+            WaitForKeyPress("Table created - You can verify in the database that the 'TestUsers' table exists");
 
-            // Test usando SQL directo (simulando el repositorio)
-            Console.WriteLine("\n3?? INSERTANDO DATOS DE PRUEBA...");
+            // Test using direct SQL (simulating repository)
+            Console.WriteLine("\n3?? INSERTING TEST DATA...");
             await InsertTestData(connectionString);
-            WaitForKeyPress("Datos insertados - Puedes verificar con: SELECT * FROM TestUsers");
+            WaitForKeyPress("Data inserted - You can verify with: SELECT * FROM TestUsers");
 
-            Console.WriteLine("\n4?? CONSULTANDO DATOS...");
+            Console.WriteLine("\n4?? QUERYING DATA...");
             await QueryTestData(connectionString);
-            WaitForKeyPress("Consulta completada - Compara los resultados con tu consulta en la base de datos");
+            WaitForKeyPress("Query completed - Compare the results with your database query");
 
-            Console.WriteLine("\n5?? ACTUALIZANDO DATOS...");
+            Console.WriteLine("\n5?? UPDATING DATA...");
             await UpdateTestData(connectionString);
-            WaitForKeyPress("Actualización completada - Verifica que el usuario admin cambió a 'admin_updated'");
+            WaitForKeyPress("Update completed - Verify that the admin user changed to 'admin_updated'");
 
-            Console.WriteLine("\n6?? ELIMINANDO DATOS...");
+            Console.WriteLine("\n6?? DELETING DATA...");
             await DeleteTestData(connectionString);
-            WaitForKeyPress("Eliminación completada - Verifica que la tabla TestUsers está vacía");
+            WaitForKeyPress("Deletion completed - Verify that the TestUsers table is empty");
 
-            Console.WriteLine("\n7?? LIMPIANDO TABLA...");
+            Console.WriteLine("\n7?? CLEANING UP TABLE...");
             await DropTestTable(connectionString);
-            WaitForKeyPress("Tabla eliminada - Verifica que la tabla TestUsers ya no existe");
+            WaitForKeyPress("Table deleted - Verify that the TestUsers table no longer exists");
 
-            Console.WriteLine("\n? TODOS LOS TESTS COMPLETADOS EXITOSAMENTE!");
-            Console.WriteLine("?? La librería está funcionando correctamente");
-            Console.WriteLine("?? El código generado es válido y ejecutable");
+            Console.WriteLine("\n? ALL TESTS COMPLETED SUCCESSFULLY!");
+            Console.WriteLine("?? The library is working correctly");
+            Console.WriteLine("?? The generated code is valid and executable");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"\n? ERROR EN EL TEST: {ex.Message}");
+            Console.WriteLine($"\n? TEST ERROR: {ex.Message}");
             Console.WriteLine($"Stack Trace: {ex.StackTrace}");
         }
 
-        Console.WriteLine("\nPresiona cualquier tecla para finalizar...");
+        Console.WriteLine("\nPress any key to finish...");
         Console.ReadKey();
     }
 
     private static void WaitForKeyPress(string message)
     {
         Console.WriteLine($"\n??  {message}");
-        Console.WriteLine("   Presiona cualquier tecla para continuar con el siguiente paso...");
+        Console.WriteLine("   Press any key to continue to the next step...");
         Console.ReadKey();
         Console.WriteLine();
     }
@@ -106,22 +106,22 @@ public static class DirectTest
                 CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
                 UpdatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE()
             )
-            PRINT 'Tabla TestUsers creada'
+            PRINT 'TestUsers table created'
         END
         ELSE
         BEGIN
-            PRINT 'Tabla TestUsers ya existe'
+            PRINT 'TestUsers table already exists'
         END";
 
         using var connection = new SqlConnection(connectionString);
         using var command = new SqlCommand(sql, connection);
         await connection.OpenAsync();
         await command.ExecuteNonQueryAsync();
-        Console.WriteLine("? Tabla TestUsers verificada/creada");
+        Console.WriteLine("? TestUsers table verified/created");
         
-        // Mostrar información de la base de datos
-        Console.WriteLine($"?? Base de datos: {connection.Database}");
-        Console.WriteLine($"?? Servidor: {connection.DataSource}");
+        // Show database information
+        Console.WriteLine($"?? Database: {connection.Database}");
+        Console.WriteLine($"?? Server: {connection.DataSource}");
     }
 
     static async Task InsertTestData(string connectionString)
@@ -136,7 +136,7 @@ public static class DirectTest
         using var connection = new SqlConnection(connectionString);
         await connection.OpenAsync();
 
-        Console.WriteLine("?? Insertando usuarios uno por uno:");
+        Console.WriteLine("?? Inserting users one by one:");
         foreach (var user in users)
         {
             var sql = @"INSERT INTO TestUsers (Username, PasswordHash, Email, FirstName, LastName, status)
@@ -151,10 +151,10 @@ public static class DirectTest
             command.Parameters.AddWithValue("@status", user.Status);
 
             await command.ExecuteNonQueryAsync();
-            Console.WriteLine($"   ? Usuario insertado: {user.Username} ({user.Email}) - Status: {user.Status}");
+            Console.WriteLine($"   ? User inserted: {user.Username} ({user.Email}) - Status: {user.Status}");
         }
         
-        Console.WriteLine("\n?? Para verificar en la base de datos, ejecuta:");
+        Console.WriteLine("\n?? To verify in the database, run:");
         Console.WriteLine("   SELECT * FROM TestUsers ORDER BY CreatedAt DESC");
     }
 
@@ -167,7 +167,7 @@ public static class DirectTest
         using var command = new SqlCommand(sql, connection);
         using var reader = await command.ExecuteReaderAsync();
 
-        Console.WriteLine("?? Usuarios encontrados (resultado de la consulta):");
+        Console.WriteLine("?? Users found (query result):");
         Console.WriteLine($"{"ID",-3} {"Username",-12} {"Email",-20} {"FirstName",-10} {"LastName",-10} {"Status",-8} {"CreatedAt",-20}");
         Console.WriteLine(new string('-', 85));
 
@@ -177,7 +177,7 @@ public static class DirectTest
             Console.WriteLine($"{reader["Id"],-3} {reader["Username"],-12} {reader["Email"],-20} {reader["FirstName"] ?? "NULL",-10} {reader["LastName"] ?? "NULL",-10} {reader["status"],-8} {createdAt,-20}");
         }
         
-        Console.WriteLine("\n?? Para comparar, ejecuta la misma consulta en tu cliente SQL:");
+        Console.WriteLine("\n?? To compare, run the same query in your SQL client:");
         Console.WriteLine("   SELECT * FROM TestUsers ORDER BY CreatedAt DESC");
     }
 
@@ -186,8 +186,8 @@ public static class DirectTest
         using var connection = new SqlConnection(connectionString);
         await connection.OpenAsync();
 
-        Console.WriteLine("?? Actualizando usuario con ID = 1...");
-        Console.WriteLine("   Cambios: Username = 'admin_updated', Email = 'admin.updated@test.com', Status = 'inactive'");
+        Console.WriteLine("?? Updating user with ID = 1...");
+        Console.WriteLine("   Changes: Username = 'admin_updated', Email = 'admin.updated@test.com', Status = 'inactive'");
 
         var sql = @"UPDATE TestUsers 
                    SET Username = @Username, Email = @Email, status = @status, UpdatedAt = GETUTCDATE()
@@ -200,9 +200,9 @@ public static class DirectTest
         command.Parameters.AddWithValue("@Id", 1);
 
         var rowsAffected = await command.ExecuteNonQueryAsync();
-        Console.WriteLine($"? Usuario actualizado. Filas afectadas: {rowsAffected}");
+        Console.WriteLine($"? User updated. Rows affected: {rowsAffected}");
 
-        // Mostrar usuario actualizado
+        // Show updated user
         var selectSql = "SELECT Id, Username, Email, status, UpdatedAt FROM TestUsers WHERE Id = 1";
         using var selectCommand = new SqlCommand(selectSql, connection);
         using var reader = await selectCommand.ExecuteReaderAsync();
@@ -210,11 +210,11 @@ public static class DirectTest
         if (await reader.ReadAsync())
         {
             var updatedAt = ((DateTime)reader["UpdatedAt"]).ToString("yyyy-MM-dd HH:mm:ss");
-            Console.WriteLine($"?? Usuario actualizado: ID={reader["Id"]}, Username={reader["Username"]}, Email={reader["Email"]}, Status={reader["status"]}");
+            Console.WriteLine($"?? Updated user: ID={reader["Id"]}, Username={reader["Username"]}, Email={reader["Email"]}, Status={reader["status"]}");
             Console.WriteLine($"   UpdatedAt: {updatedAt}");
         }
         
-        Console.WriteLine("\n?? Para verificar, ejecuta:");
+        Console.WriteLine("\n?? To verify, run:");
         Console.WriteLine("   SELECT * FROM TestUsers WHERE Id = 1");
         Console.WriteLine("   SELECT * FROM TestUsers ORDER BY UpdatedAt DESC");
     }
@@ -224,42 +224,42 @@ public static class DirectTest
         using var connection = new SqlConnection(connectionString);
         await connection.OpenAsync();
 
-        // Contar usuarios antes
+        // Count users before
         var countSql = "SELECT COUNT(*) FROM TestUsers";
         using var countCommand = new SqlCommand(countSql, connection);
         var beforeCount = (int)await countCommand.ExecuteScalarAsync();
-        Console.WriteLine($"?? Usuarios antes de eliminar: {beforeCount}");
+        Console.WriteLine($"?? Users before deletion: {beforeCount}");
 
-        // Mostrar usuarios que se van a eliminar
+        // Show users to be deleted
         var showSql = "SELECT Id, Username FROM TestUsers";
         using var showCommand = new SqlCommand(showSql, connection);
         using var reader = await showCommand.ExecuteReaderAsync();
         
-        Console.WriteLine("???  Usuarios que serán eliminados:");
+        Console.WriteLine("???  Users to be deleted:");
         while (await reader.ReadAsync())
         {
             Console.WriteLine($"   • ID: {reader["Id"]}, Username: {reader["Username"]}");
         }
         reader.Close();
 
-        // Eliminar usuarios
+        // Delete users
         var deleteSql = "DELETE FROM TestUsers";
         using var deleteCommand = new SqlCommand(deleteSql, connection);
         var deletedRows = await deleteCommand.ExecuteNonQueryAsync();
-        Console.WriteLine($"? Usuarios eliminados: {deletedRows}");
+        Console.WriteLine($"? Users deleted: {deletedRows}");
 
-        // Verificar
+        // Verify
         var afterCount = (int)await countCommand.ExecuteScalarAsync();
-        Console.WriteLine($"?? Usuarios restantes: {afterCount}");
+        Console.WriteLine($"?? Remaining users: {afterCount}");
         
-        Console.WriteLine("\n?? Para verificar, ejecuta:");
+        Console.WriteLine("\n?? To verify, run:");
         Console.WriteLine("   SELECT COUNT(*) FROM TestUsers");
-        Console.WriteLine("   SELECT * FROM TestUsers (debería estar vacía)");
+        Console.WriteLine("   SELECT * FROM TestUsers (should be empty)");
     }
 
     static async Task DropTestTable(string connectionString)
     {
-        Console.WriteLine("???  Eliminando tabla TestUsers...");
+        Console.WriteLine("???  Dropping TestUsers table...");
         
         var sql = "DROP TABLE IF EXISTS TestUsers";
         
@@ -267,10 +267,10 @@ public static class DirectTest
         await connection.OpenAsync();
         using var command = new SqlCommand(sql, connection);
         await command.ExecuteNonQueryAsync();
-        Console.WriteLine("? Tabla TestUsers eliminada");
+        Console.WriteLine("? TestUsers table dropped");
         
-        Console.WriteLine("\n?? Para verificar que la tabla fue eliminada, ejecuta:");
-        Console.WriteLine("   SELECT * FROM TestUsers (debería dar error 'Invalid object name')");
-        Console.WriteLine("   O verifica en el explorador de objetos de tu cliente SQL");
+        Console.WriteLine("\n?? To verify that the table was dropped, run:");
+        Console.WriteLine("   SELECT * FROM TestUsers (should give error 'Invalid object name')");
+        Console.WriteLine("   Or check in your SQL client's object explorer");
     }
 }

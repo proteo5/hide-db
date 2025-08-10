@@ -1,6 +1,6 @@
 # Proteo5.HideDB - YAML DSL Generator
 
-**Generador de código automático basado en DSL YAML para entidades de base de datos**
+**Automatic code generator based on YAML DSL for database entities**
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![C#](https://img.shields.io/badge/C%23-13.0-green.svg)](https://docs.microsoft.com/en-us/dotnet/csharp/)
@@ -8,102 +8,116 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](https://github.com)
 
-## Descripción
+## Description
 
-Proteo5.HideDB es una herramienta de generación de código que convierte definiciones YAML de entidades en código C# completamente funcional, incluyendo modelos, repositorios, interfaces y scripts SQL. Utiliza un DSL (Domain Specific Language) YAML intuitivo y potente para definir entidades de base de datos y generar automáticamente todo el código necesario para operaciones CRUD.
+Proteo5.HideDB is a code generation tool that converts YAML entity definitions into fully functional C# code, including models, repositories, interfaces, and SQL scripts. It uses an intuitive and powerful YAML DSL (Domain Specific Language) to define database entities and automatically generate all the necessary code for CRUD operations.
 
-## Características Principales
+## Key Features
 
-- **Generación Automática de Código**: Modelos, repositorios, interfaces y SQL
-- **DSL YAML Intuitivo**: Sintaxis clara y expresiva para definir entidades
-- **File Watcher**: Regeneración automática al modificar archivos YAML
-- **Type Safety**: Soporte completo para nullable reference types de C# 8+
-- **Multi-Database**: Soporte para SQL Server, PostgreSQL, MySQL, SQLite y Oracle
-- **Métodos Async/Sync**: Generación de métodos síncronos y asíncronos
-- **Data Annotations**: Integración con Entity Framework DataAnnotations
-- **SQL Personalizado**: Soporte para consultas SQL personalizadas
-- **Catálogos/Enums**: Generación automática de enumeraciones
-- **Alta Performance**: Código optimizado y libre de warnings
+- **Automatic Code Generation**: Models, repositories, interfaces, and SQL
+- **Intuitive YAML DSL**: Clear and expressive syntax for defining entities
+- **File Watcher**: Automatic regeneration when modifying YAML files
+- **Type Safety**: Full support for C# 8+ nullable reference types
+- **Multi-Database**: Support for SQL Server, PostgreSQL, MySQL, SQLite, and Oracle
+- **Async/Sync Methods**: Generation of both synchronous and asynchronous methods
+- **Data Annotations**: Integration with Entity Framework DataAnnotations
+- **Custom SQL**: Support for custom SQL queries
+- **Catalogs/Enums**: Automatic generation of enumerations
+- **High Performance**: Optimized and warning-free code
 
-## Arquitectura
+## Architecture
 
 ```
 Proteo5.HideDB/
-??? Proteo5.HideDB.Lib/           # Librería principal
-?   ??? Configuration/            # Configuración del generador
-?   ??? Generators/               # Generadores de código
-?   ?   ??? YamlDslGenerator.cs   # Generador principal
-?   ?   ??? ModelGenerator.cs     # Generador de modelos
-?   ?   ??? RepositoryGenerator.cs # Generador de repositorios
-?   ?   ??? SqlGenerator.cs       # Generador de SQL
-?   ?   ??? EnumGenerator.cs      # Generador de enums
-?   ??? Models/                   # Modelos de definición
-?   ??? Utils/                    # Utilidades y helpers
-??? Proteo5.HideDB.CMD/           # Aplicación de consola
-?   ??? Entities/                 # Definiciones YAML
-?   ??? GeneratedCode/            # Código generado
-?   ??? GeneratedSQL/             # Scripts SQL generados
-??? README.md                     # Este archivo
+??? Proteo5.HideDB.Lib/           # Core Library
+?   ??? Configuration/            # Generator configuration
+?   ?   ??? GeneratorConfig.cs    # Main configuration class
+?   ??? Generators/               # Code generators
+?   ?   ??? YamlDslGenerator.cs   # Main generator (File watcher)
+?   ?   ??? ModelGenerator.cs     # Entity models generator
+?   ?   ??? RepositoryGenerator.cs # Repository pattern generator
+?   ?   ??? SqlGenerator.cs       # SQL DDL scripts generator
+?   ?   ??? EnumGenerator.cs      # Enumerations generator
+?   ??? Models/                   # Definition models
+?   ?   ??? EntityDefinition.cs   # YAML entity structure
+?   ?   ??? FieldDefinition.cs    # Field definitions
+?   ?   ??? StatementDefinition.cs # SQL statement definitions
+?   ??? Utils/                    # Utilities and helpers
+?       ??? TypeMapper.cs         # YAML to C#/SQL type mapping
+?       ??? SqlParameterExtractor.cs # SQL parameter extraction
+??? Proteo5.HideDB.CMD/           # Console Application
+?   ??? Entities/                 # YAML definitions
+?   ?   ??? Users.yaml            # Example: Users entity
+?   ?   ??? Roles.yaml            # Example: Roles entity
+?   ??? GeneratedCode/            # Generated C# code
+?   ?   ??? Models/               # Generated entity models
+?   ?   ??? Repositories/         # Generated repositories
+?   ?   ??? Enums/                # Generated enumerations
+?   ??? GeneratedSQL/             # Generated SQL scripts
+?   ??? DirectTest.cs             # Interactive testing suite
+?   ??? Program.cs                # Main application entry point
+?   ??? appsettings.json          # Configuration file
+??? README.md                     # This file
 ```
 
-## Inicio Rápido
+## Quick Start
 
-### Prerrequisitos
+### Prerequisites
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) o superior
-- Base de datos (SQL Server, PostgreSQL, MySQL, SQLite u Oracle)
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or higher
+- Database (SQL Server, PostgreSQL, MySQL, SQLite, or Oracle)
 
-### Instalación
+### Installation
 
-1. **Clonar el repositorio:**
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/tu-usuario/hide-db.git
+   git clone https://github.com/your-username/hide-db.git
    cd hide-db
    ```
 
-2. **Restaurar dependencias:**
+2. **Restore dependencies:**
    ```bash
    dotnet restore
    ```
 
-3. **Configurar base de datos:**
-   Edita `Proteo5.HideDB.CMD/appsettings.json`:
+3. **Configure database:**
+   Edit `Proteo5.HideDB.CMD/appsettings.json`:
    ```json
    {
      "ConnectionStrings": {
        "DefaultConnection": {
          "Type": "SqlServer",
-         "ConnectionString": "Server=localhost;Database=MiDB;Trusted_Connection=true;"
+         "ConnectionString": "Server=localhost;Database=MyDB;Trusted_Connection=true;"
        }
      }
    }
    ```
 
-### Uso Básico
+### Basic Usage
 
-1. **Ejecutar el generador:**
+1. **Run the generator:**
    ```bash
    cd Proteo5.HideDB.CMD
    dotnet run
    ```
 
-2. **Comandos disponibles:**
+2. **Available commands:**
    ```bash
-   dotnet run                # Modo file watcher
-   dotnet run test          # Generar código y mostrar ejemplos
-   dotnet run directtest    # Ejecutar test de la librería
+   dotnet run                # File watcher mode
+   dotnet run test          # Generate code and show examples
+   dotnet run directtest    # Run library test suite
    ```
 
-## Sintaxis YAML
+## YAML Syntax
 
-### Ejemplo Básico: Users.yaml
+### Basic Example: Users.yaml
 
 ```yaml
-# Definición de entidad Users
+# Users entity definition
 entity: "Users"
 entityversion: "1"
 version: "1.0"
-description: "Entidad para gestión de usuarios del sistema"
+description: "Entity for system user management"
 
 fields:
   - name: "Id"
@@ -111,44 +125,44 @@ fields:
     primaryKey: true
     autoIncrement: true
     required: true
-    description: "Identificador único del usuario"
+    description: "Unique user identifier"
     
   - name: "Username"
     type: "string"
     maxLength: 50
     required: true
-    description: "Nombre de usuario único"
+    description: "Unique username"
     
   - name: "Email"
     type: "string"
     maxLength: 100
     required: true
-    description: "Dirección de correo electrónico"
+    description: "Email address"
     
   - name: "FirstName"
     type: "string"
     maxLength: 50
     nullable: true
-    description: "Nombre del usuario"
+    description: "User's first name"
     
   - name: "Status"
     type: "string"
     defaultValue: "active"
     catalog: "statuses"
-    description: "Estado del usuario"
+    description: "User status"
 
 catalogs:
   statuses:
     - name: "active"
-      description: "Usuario activo"
+      description: "Active user"
     - name: "inactive"
-      description: "Usuario inactivo"
+      description: "Inactive user"
 
 statements:
   - name: "Insert"
     type: "Insert"
     return: "nothing"
-    description: "Crea un nuevo usuario"
+    description: "Create a new user"
     sql: |
       INSERT INTO Users (Username, Email, FirstName, Status)
       VALUES (@Username, @Email, @FirstName, @Status);
@@ -156,38 +170,38 @@ statements:
   - name: "GetById"
     type: "Select"
     return: "one"
-    description: "Obtiene un usuario por ID"
+    description: "Get user by ID"
     sql: |
       SELECT * FROM Users WHERE Id = @Id;
 ```
 
-### Tipos de Datos Soportados
+### Supported Data Types
 
-| Tipo YAML | Tipo C# | Tipo SQL Server | Descripción |
+| YAML Type | C# Type | SQL Server Type | Description |
 |-----------|---------|-----------------|-------------|
-| `int` | `int` | `INT` | Entero 32-bit |
-| `long` | `long` | `BIGINT` | Entero 64-bit |
-| `string` | `string` | `NVARCHAR` | Cadena de texto |
-| `datetime` | `DateTime` | `DATETIME2` | Fecha y hora |
-| `bool` | `bool` | `BIT` | Booleano |
-| `decimal` | `decimal` | `DECIMAL(18,2)` | Decimal de precisión |
-| `double` | `double` | `FLOAT` | Punto flotante |
-| `guid` | `Guid` | `UNIQUEIDENTIFIER` | Identificador único |
+| `int` | `int` | `INT` | 32-bit integer |
+| `long` | `long` | `BIGINT` | 64-bit integer |
+| `string` | `string` | `NVARCHAR` | Text string |
+| `datetime` | `DateTime` | `DATETIME2` | Date and time |
+| `bool` | `bool` | `BIT` | Boolean |
+| `decimal` | `decimal` | `DECIMAL(18,2)` | Precision decimal |
+| `double` | `double` | `FLOAT` | Floating point |
+| `guid` | `Guid` | `UNIQUEIDENTIFIER` | Unique identifier |
 
-### Atributos de Campo
+### Field Attributes
 
-- **`name`**: Nombre del campo (requerido)
-- **`type`**: Tipo de dato (requerido)
-- **`primaryKey`**: Es clave primaria (boolean)
-- **`autoIncrement`**: Auto-incremento (boolean)
-- **`required`**: Campo requerido (boolean)
-- **`nullable`**: Permite valores nulos (boolean)
-- **`maxLength`**: Longitud máxima para strings
-- **`defaultValue`**: Valor por defecto
-- **`catalog`**: Referencia a catálogo/enum
-- **`description`**: Descripción del campo
+- **`name`**: Field name (required)
+- **`type`**: Data type (required)
+- **`primaryKey`**: Is primary key (boolean)
+- **`autoIncrement`**: Auto-increment (boolean)
+- **`required`**: Required field (boolean)
+- **`nullable`**: Allows null values (boolean)
+- **`maxLength`**: Maximum length for strings
+- **`defaultValue`**: Default value
+- **`catalog`**: Reference to catalog/enum
+- **`description`**: Field description
 
-## Configuración
+## Configuration
 
 ### appsettings.json
 
@@ -196,14 +210,14 @@ statements:
   "ConnectionStrings": {
     "DefaultConnection": {
       "Type": "SqlServer",
-      "ConnectionString": "Server=localhost;Database=MiDB;Trusted_Connection=true;"
+      "ConnectionString": "Server=localhost;Database=MyDB;Trusted_Connection=true;"
     }
   },
   "Generator": {
     "YamlPath": "./Entities",
     "OutputPath": "./GeneratedCode",
     "SqlOutputPath": "./GeneratedSQL",
-    "Namespace": "MiProyecto.Generated",
+    "Namespace": "MyProject.Generated",
     "Provider": "SqlServer",
     "GenerateInterfaces": true,
     "GenerateAsync": true,
@@ -213,23 +227,23 @@ statements:
 }
 ```
 
-### Opciones de Configuración
+### Configuration Options
 
-- **`YamlPath`**: Directorio de archivos YAML
-- **`OutputPath`**: Directorio de código generado
-- **`SqlOutputPath`**: Directorio de scripts SQL
-- **`Namespace`**: Namespace del código generado
-- **`Provider`**: Proveedor de base de datos (SqlServer, PostgreSQL, MySQL, SQLite, Oracle)
-- **`GenerateInterfaces`**: Generar interfaces de repositorios
-- **`GenerateAsync`**: Generar métodos asíncronos
-- **`GenerateSync`**: Generar métodos síncronos
-- **`AddDataAnnotations`**: Añadir DataAnnotations a modelos
+- **`YamlPath`**: YAML files directory
+- **`OutputPath`**: Generated code directory
+- **`SqlOutputPath`**: SQL scripts directory
+- **`Namespace`**: Generated code namespace
+- **`Provider`**: Database provider (SqlServer, PostgreSQL, MySQL, SQLite, Oracle)
+- **`GenerateInterfaces`**: Generate repository interfaces
+- **`GenerateAsync`**: Generate asynchronous methods
+- **`GenerateSync`**: Generate synchronous methods
+- **`AddDataAnnotations`**: Add DataAnnotations to models
 
-## Código Generado
+## Generated Code
 
-Para cada entidad definida en YAML, se generan los siguientes archivos:
+For each entity defined in YAML, the following files are generated:
 
-### 1. Modelo (UsersModel.cs)
+### 1. Model (UsersModel.cs)
 ```csharp
 [Table("Users")]
 public class UsersModel
@@ -245,11 +259,11 @@ public class UsersModel
     [MaxLength(50)]
     public string? FirstName { get; set; }
     
-    // ... más propiedades
+    // ... more properties
 }
 ```
 
-### 2. Interfaz del Repositorio (IUsersRepository.cs)
+### 2. Repository Interface (IUsersRepository.cs)
 ```csharp
 public interface IUsersRepository
 {
@@ -258,11 +272,11 @@ public interface IUsersRepository
     Task<List<UsersModel>> GetAllAsync();
     Task<int> UpdateAsync(string username, string email, int id);
     Task<int> DeleteByIdAsync(int id);
-    // ... más métodos
+    // ... more methods
 }
 ```
 
-### 3. Implementación del Repositorio (UsersRepository.cs)
+### 3. Repository Implementation (UsersRepository.cs)
 ```csharp
 public class UsersRepository : IUsersRepository
 {
@@ -276,27 +290,27 @@ public class UsersRepository : IUsersRepository
     public async Task<int> InsertAsync(string username, string email, string? firstName)
     {
         using var connection = new SqlConnection(_connectionString);
-        using var command = new SqlCommand(/* SQL generado */, connection);
-        // ... implementación
+        using var command = new SqlCommand(/* Generated SQL */, connection);
+        // ... implementation
     }
     
-    // ... más métodos implementados
+    // ... more implemented methods
 }
 ```
 
-### 4. Enumeraciones (UsersEnums.cs)
+### 4. Enumerations (UsersEnums.cs)
 ```csharp
 public enum UsersStatuses
 {
-    [Description("Usuario activo")]
+    [Description("Active user")]
     Active = 0,
     
-    [Description("Usuario inactivo")]
+    [Description("Inactive user")]
     Inactive = 1
 }
 ```
 
-### 5. Script SQL (Users_CreateTable.sql)
+### 5. SQL Script (Users_CreateTable.sql)
 ```sql
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' AND xtype='U')
 BEGIN
@@ -315,73 +329,89 @@ END
 
 ## Testing
 
-### Ejecutar Tests
+### Running Tests
 
 ```bash
-# Test interactivo con pausas para verificación manual
+# Interactive test with pauses for manual verification
 dotnet run directtest
 
-# Generar código y ejemplos de test
+# Generate code and test examples
 dotnet run test
 ```
 
-### Características de Testing
+### Testing Features
 
-- ? Creación automática de tablas
-- ? Inserción de datos de prueba
-- ? Consultas y búsquedas
-- ? Actualizaciones con timestamps
-- ? Eliminación de datos
-- ? Limpieza automática
-- ? Pausas interactivas para verificación manual
-- ? Comandos SQL sugeridos para verificación
+- ? Automatic Table Creation
+- ? Test Data Insertion
+- ? Query and Search Operations
+- ? Timestamp Updates
+- ? Data Deletion
+- ? Automatic Cleanup
+- ? Interactive Pauses
+- ? Suggested SQL Commands
 
-## Estadísticas del Proyecto
+### Interactive Testing Process
 
-- **Lenguaje Principal**: C# 13.0
+1. **Database Connection Test**: Verifies connectivity
+2. **Table Creation**: Creates test table with proper schema
+3. **Data Insertion**: Inserts multiple test records
+4. **Data Query**: Retrieves and displays all records
+5. **Data Update**: Modifies existing records with timestamp updates
+6. **Data Deletion**: Removes all test records
+7. **Table Cleanup**: Drops test table
+
+Each step includes:
+- **Status Information**: Clear status messages
+- **Manual Verification**: Pause with suggested SQL commands
+- **Error Handling**: Comprehensive error reporting
+- **Database State Validation**: Confirms expected database state
+
+## Project Statistics
+
+- **Primary Language**: C# 13.0
 - **Framework**: .NET 8.0
-- **Dependencias Principales**:
+- **Main Dependencies**:
   - YamlDotNet 16.3.0
   - Microsoft.Data.SqlClient 6.0.2
   - Microsoft.Extensions.* 9.0.8
-- **Arquitectura**: Clean Architecture
-- **Patrones**: Repository, Factory, Builder
+- **Architecture**: Clean Architecture
+- **Patterns**: Repository, Factory, Builder
 - **Testing**: Unit Tests + Integration Tests
 
-## Contribuir
+## Contributing
 
-1. Fork el proyecto
-2. Crear feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
-4. Push al branch (`git push origin feature/AmazingFeature`)
-5. Abrir Pull Request
+1. Fork the project
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
 
-### Convenciones de Código
+### Code Conventions
 
-- Usar C# 13.0 features
-- Seguir convenciones de nomenclatura .NET
-- Documentar métodos públicos con XML comments
-- Incluir tests para nuevas funcionalidades
-- Mantener cobertura de tests > 80%
+- Use C# 13.0 features
+- Follow .NET naming conventions
+- Document public methods with XML comments
+- Include tests for new functionality
+- Maintain test coverage > 80%
 
-## Licencia
+## License
 
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Agradecimientos
+## Acknowledgments
 
-- [YamlDotNet](https://github.com/aaubry/YamlDotNet) - Serialización YAML
-- [Microsoft.Extensions](https://github.com/dotnet/extensions) - Dependency Injection y Configuration
-- [.NET Community](https://dotnet.microsoft.com/platform/community) - Inspiración y mejores prácticas
+- [YamlDotNet](https://github.com/aaubry/YamlDotNet) - YAML serialization
+- [Microsoft.Extensions](https://github.com/dotnet/extensions) - Dependency Injection and Configuration
+- [.NET Community](https://dotnet.microsoft.com/platform/community) - Inspiration and best practices
 
-## Soporte
+## Support
 
-- **Issues**: [GitHub Issues](https://github.com/tu-usuario/hide-db/issues)
-- **Discusiones**: [GitHub Discussions](https://github.com/tu-usuario/hide-db/discussions)
-- **Email**: tu-email@ejemplo.com
+- **Issues**: [GitHub Issues](https://github.com/your-username/hide-db/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-username/hide-db/discussions)
+- **Email**: your-email@example.com
 
 ---
 
 <div align="center">
-  <strong>Hecho con ?? para la comunidad .NET</strong>
+  <strong>Made with ?? for the .NET community</strong>
 </div>

@@ -2,7 +2,7 @@
 entity: "Users"
 entityversion: "1"
 version: "1.0"
-description: "Entidad para gestión de usuarios del sistema - Updated dependencies"
+description: "Entity for system user management - Updated dependencies"
 
 fields:
   - name: "Id"
@@ -11,78 +11,78 @@ fields:
     autoIncrement: true
     required: true
     nullable: false
-    description: "Identificador único del usuario"
+    description: "Unique user identifier"
   - name: "Username"
     type: "string"
     maxLength: 50
     required: true
     nullable: false
-    description: "Nombre de usuario único"
+    description: "Unique username"
   - name: "PasswordHash"
     type: "string"
     maxLength: 255
     required: true
     nullable: false
-    description: "Hash de la contraseña"
+    description: "Password hash"
   - name: "Email"
     type: "string"
     maxLength: 100
     required: true
     nullable: false
-    description: "Dirección de correo electrónico"
+    description: "Email address"
   - name: "FirstName"
     type: "string"
     maxLength: 50
     required: false
     nullable: true
-    description: "Nombre del usuario"
+    description: "User's first name"
   - name: "LastName"
     type: "string"
     maxLength: 50
     required: false
     nullable: true
-    description: "Apellido del usuario"
+    description: "User's last name"
   - name: "status"
     type: "string"
     defaultValue: "active"
     catalog: "statuses"
     required: false
     nullable: true
-    description: "Estado del usuario"
+    description: "User status"
   - name: "CreatedAt"
     type: "DateTime"
     defaultValue: "CURRENT_TIMESTAMP_UTC"
     required: true
     nullable: false
-    description: "Fecha de creación"
+    description: "Creation date"
   - name: "UpdatedAt"
     type: "DateTime"
     defaultValue: "CURRENT_TIMESTAMP_UTC"
     required: true
     nullable: false
-    description: "Fecha de última actualización"
+    description: "Last update date"
 
 catalogs:
   statuses:
     - name: "active"
-      description: "Usuario activo"
+      description: "Active user"
     - name: "inactive"
-      description: "Usuario inactivo"
+      description: "Inactive user"
     - name: "banned"
-      description: "Usuario baneado"
+      description: "Banned user"
 
 statements:
   - name: "Insert"
     type: "Insert"
     return: "nothing"
-    description: "Crea un nuevo usuario"
+    description: "Create a new user"
     sql: |
       INSERT INTO Users (Username, PasswordHash, Email, FirstName, LastName, status)
       VALUES (@Username, @PasswordHash, @Email, @FirstName, @LastName, @status);
   - name: "Update"
     type: "Update"
     return: "nothing"
-    description: "Actualiza un usuario existente"
+    description: "Update an existing user"
     sql: |
       UPDATE Users 
       SET Username = @Username,
@@ -96,14 +96,14 @@ statements:
   - name: "DeleteById"
     type: "Delete"
     return: "nothing"
-    description: "Elimina un usuario por ID"
+    description: "Delete a user by ID"
     sql: |
       DELETE FROM Users 
       WHERE Id = @Id;
   - name: "GetAll"
     type: "Select"
     return: "many"
-    description: "Obtiene todos los usuarios ordenados por fecha de creación"
+    description: "Get all users ordered by creation date"
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt
       FROM Users
@@ -111,7 +111,7 @@ statements:
   - name: "GetById"
     type: "Select"
     return: "one"
-    description: "Obtiene un usuario por su ID"
+    description: "Get a user by ID"
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt
       FROM Users
@@ -119,7 +119,7 @@ statements:
   - name: "GetByUser"
     type: "Select"
     return: "one"
-    description: "Obtiene un usuario por nombre de usuario"
+    description: "Get a user by username"
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt
       FROM Users
@@ -127,7 +127,7 @@ statements:
   - name: "GetByStatus"
     type: "Select"
     return: "many"
-    description: "Obtiene usuarios filtrados por estado"
+    description: "Get users filtered by status"
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt
       FROM Users
@@ -136,7 +136,7 @@ statements:
   - name: "GetActiveCount"
     type: "Select"
     return: "scalar"
-    description: "Obtiene el conteo de usuarios activos"
+    description: "Get count of active users"
     sql: |
       SELECT COUNT(*)
       FROM Users
@@ -144,18 +144,18 @@ statements:
   - name: "GetByEmailAndStatus"
     type: "Select"
     return: "many"
-    description: "Búsqueda avanzada de usuarios"
+    description: "Advanced user search"
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt,
              CONCAT(FirstName, ' ', LastName) as Name,
              CASE 
-               WHEN status = 'active' THEN 'Activo'
-               WHEN status = 'inactive' THEN 'Inactivo'
-               WHEN status = 'banned' THEN 'Baneado'
-               ELSE 'Desconocido'
+               WHEN status = 'active' THEN 'Active'
+               WHEN status = 'inactive' THEN 'Inactive'
+               WHEN status = 'banned' THEN 'Banned'
+               ELSE 'Unknown'
              END as Status
       FROM Users 
       WHERE (@searchTerm IS NULL OR CONCAT(FirstName, ' ', LastName) LIKE CONCAT('%', @searchTerm, '%') 
              OR Email LIKE CONCAT('%', @searchTerm, '%'))
         AND (@statusFilter IS NULL OR status = @statusFilter)
-      ORDER BY CreatedAt DESC;      ORDER BY CreatedAt DESC;
+      ORDER BY CreatedAt DESC;

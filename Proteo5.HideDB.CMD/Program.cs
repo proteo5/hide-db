@@ -19,47 +19,47 @@ class Program
 
         try
         {
-            // Verificar argumentos
+            // Check arguments
             if (args.Length > 0)
             {
                 switch (args[0].ToLower())
                 {
                     case "test":
-                        Console.WriteLine("🧪 Modo test detectado. Generando código y preparando test...");
+                        Console.WriteLine("🧪 Test mode detected. Generating code and preparing test...");
                         await RunTestMode();
                         return;
                     case "directtest":
-                        Console.WriteLine("🔬 Ejecutando test directo de la librería...");
+                        Console.WriteLine("🔬 Running direct library test...");
                         await DirectTest.RunDirectTest();
                         return;
                 }
             }
 
-            // Configurar host
+            // Configure host
             var host = CreateHostBuilder(args).Build();
             
-            // Obtener servicios
+            // Get services
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
             var config = host.Services.GetRequiredService<GeneratorConfig>();
             
-            logger.LogInformation("Iniciando YAML DSL Generator...");
+            logger.LogInformation("Starting YAML DSL Generator...");
             
-            // Crear y configurar generador
+            // Create and configure generator
             var generator = new YamlDslGenerator(config, host.Services.GetRequiredService<ILogger<YamlDslGenerator>>());
             
-            // Crear archivo de ejemplo si no existe
+            // Create example file if it doesn't exist
             await CreateExampleYamlFile(config.YamlPath);
             
-            // Iniciar observación
+            // Start watching
             generator.StartWatching();
             
-            logger.LogInformation("🔍 Generator iniciado. Presiona 'q' para salir...");
-            Console.WriteLine("\nComandos disponibles:");
-            Console.WriteLine("• dotnet run test      - Generar código y mostrar ejemplo de test");
-            Console.WriteLine("• dotnet run directtest - Ejecutar test directo de base de datos");
-            Console.WriteLine("• q                     - Salir\n");
+            logger.LogInformation("🔍 Generator started. Press 'q' to exit...");
+            Console.WriteLine("\nAvailable commands:");
+            Console.WriteLine("• dotnet run test      - Generate code and show test example");
+            Console.WriteLine("• dotnet run directtest - Run direct database test");
+            Console.WriteLine("• q                     - Exit\n");
             
-            // Esperar input del usuario
+            // Wait for user input
             ConsoleKey key;
             do
             {
@@ -68,12 +68,12 @@ class Program
             
             // Cleanup
             generator.Stop();
-            logger.LogInformation("👋 Generator detenido. ¡Hasta luego!");
+            logger.LogInformation("👋 Generator stopped. See you later!");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Error fatal: {ex.Message}");
-            Console.WriteLine("Presiona cualquier tecla para salir...");
+            Console.WriteLine($"❌ Fatal error: {ex.Message}");
+            Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
         }
     }
@@ -82,56 +82,56 @@ class Program
     {
         try
         {
-            // Configurar host para el test
+            // Configure host for test
             var host = CreateHostBuilder(new string[0]).Build();
             var config = host.Services.GetRequiredService<GeneratorConfig>();
             
-            // Crear y configurar generador
+            // Create and configure generator
             var generator = new YamlDslGenerator(config, host.Services.GetRequiredService<ILogger<YamlDslGenerator>>());
             
-            // Crear archivo de ejemplo si no existe
+            // Create example file if it doesn't exist
             await CreateExampleYamlFile(config.YamlPath);
             
-            // Generar código
-            Console.WriteLine("Generando código...");
+            // Generate code
+            Console.WriteLine("Generating code...");
             generator.StartWatching();
-            await Task.Delay(3000); // Esperar a que se genere el código
+            await Task.Delay(3000); // Wait for code generation
             generator.Stop();
             
-            // Verificar que se generó el código
+            // Verify code was generated
             var modelsPath = Path.Combine(config.OutputPath, "Models", "UsersModel.cs");
             var repoPath = Path.Combine(config.OutputPath, "Repositories", "UsersRepository.cs");
             
             if (File.Exists(modelsPath) && File.Exists(repoPath))
             {
-                Console.WriteLine("✅ Código generado exitosamente!");
-                Console.WriteLine("\n📄 Archivos generados:");
+                Console.WriteLine("✅ Code generated successfully!");
+                Console.WriteLine("\n📄 Generated files:");
                 Console.WriteLine($"• {modelsPath}");
                 Console.WriteLine($"• {repoPath}");
                 Console.WriteLine($"• {Path.Combine(config.OutputPath, "Repositories", "IUsersRepository.cs")}");
                 Console.WriteLine($"• {Path.Combine(config.SqlOutputPath, "Users_CreateTable.sql")}");
                 
-                Console.WriteLine("\n🧪 Para probar la librería:");
-                Console.WriteLine("1. Ejecuta: dotnet run directtest");
-                Console.WriteLine("2. O copia el contenido de TestExample.cs para un test personalizado");
+                Console.WriteLine("\n🧪 To test the library:");
+                Console.WriteLine("1. Run: dotnet run directtest");
+                Console.WriteLine("2. Or copy the content from TestExample.cs for a custom test");
                 
                 await CreateTestExample();
             }
             else
             {
-                Console.WriteLine("❌ Error: No se pudo generar el código");
+                Console.WriteLine("❌ Error: Could not generate code");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Error en modo test: {ex.Message}");
+            Console.WriteLine($"❌ Error in test mode: {ex.Message}");
         }
     }
 
     static async Task CreateTestExample()
     {
         var testCode = @"
-// Ejemplo de test completo para la librería generada
+// Complete test example for the generated library
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -143,12 +143,12 @@ class TestRunner
 {
     static async Task Main()
     {
-        Console.WriteLine(""🧪 TEST DE LIBRERÍA GENERADA"");
-        Console.WriteLine(""===========================\n"");
+        Console.WriteLine(""🧪 GENERATED LIBRARY TEST"");
+        Console.WriteLine(""========================\n"");
         
         try
         {
-            // 1. Configuración
+            // 1. Configuration
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile(""appsettings.json"")
                 .Build();
@@ -156,21 +156,21 @@ class TestRunner
             
             if (string.IsNullOrEmpty(connectionString))
             {
-                Console.WriteLine(""❌ No se encontró connection string"");
+                Console.WriteLine(""❌ Connection string not found"");
                 return;
             }
             
-            Console.WriteLine(""✅ Connection string configurada"");
+            Console.WriteLine(""✅ Connection string configured"");
             
-            // 2. Crear repositorio
+            // 2. Create repository
             var usersRepo = new UsersRepository(connectionString);
-            Console.WriteLine(""✅ Repositorio UsersRepository creado"");
+            Console.WriteLine(""✅ UsersRepository created"");
             
-            // 3. Crear tabla (usando SQL directo)
+            // 3. Create table (using direct SQL)
             await CreateUsersTable(connectionString);
             
-            // 4. Test de inserción
-            Console.WriteLine(""\n📝 INSERTANDO USUARIOS..."");
+            // 4. Insertion test
+            Console.WriteLine(""\n📝 INSERTING USERS..."");
             var testUsers = new[]
             {
                 new { Username = ""admin"", Password = ""hash123"", Email = ""admin@test.com"", FirstName = ""Admin"", LastName = ""User"", Status = ""active"" },
@@ -182,72 +182,72 @@ class TestRunner
             {
                 await usersRepo.InsertAsync(user.Username, user.Password, user.Email, 
                                           user.FirstName, user.LastName, user.Status);
-                Console.WriteLine($""✅ {user.Username} insertado"");
+                Console.WriteLine($""✅ {user.Username} inserted"");
             }
             
-            // 5. Test de consulta
-            Console.WriteLine(""\n📋 CONSULTANDO USUARIOS..."");
+            // 5. Query test
+            Console.WriteLine(""\n📋 QUERYING USERS..."");
             var users = await usersRepo.GetAllAsync();
-            Console.WriteLine($""📊 Total usuarios: {users.Count}"");
+            Console.WriteLine($""📊 Total users: {users.Count}"");
             
             foreach (var user in users)
             {
-                Console.WriteLine($""👤 ID: {user.Id}, Usuario: {user.Username}, Email: {user.Email}"");
+                Console.WriteLine($""👤 ID: {user.Id}, Username: {user.Username}, Email: {user.Email}"");
             }
             
-            // 6. Test de búsqueda por ID
-            Console.WriteLine(""\n🔍 BUSCANDO USUARIO POR ID..."");
+            // 6. Search by ID test
+            Console.WriteLine(""\n🔍 SEARCHING USER BY ID..."");
             var user1 = await usersRepo.GetByIdAsync(1);
             if (user1 != null)
             {
-                Console.WriteLine($""✅ Usuario encontrado: {user1.Username} - {user1.Email}"");
+                Console.WriteLine($""✅ User found: {user1.Username} - {user1.Email}"");
             }
             
-            // 7. Test de búsqueda por username
-            Console.WriteLine(""\n🔍 BUSCANDO USUARIO POR USERNAME..."");
+            // 7. Search by username test
+            Console.WriteLine(""\n🔍 SEARCHING USER BY USERNAME..."");
             var userByName = await usersRepo.GetByUserAsync(""john"");
             if (userByName != null)
             {
-                Console.WriteLine($""✅ Usuario encontrado: {userByName.Username} - {userByName.Email}"");
+                Console.WriteLine($""✅ User found: {userByName.Username} - {userByName.Email}"");
             }
             
-            // 8. Test de actualización
+            // 8. Update test
             if (user1 != null)
             {
-                Console.WriteLine(""\n✏️ ACTUALIZANDO USUARIO..."");
+                Console.WriteLine(""\n✏️ UPDATING USER..."");
                 await usersRepo.UpdateAsync(""admin_updated"", ""newhash"", ""admin.new@test.com"",
                                            ""Admin Updated"", ""User Modified"", ""inactive"", user1.Id);
                 
                 var updatedUser = await usersRepo.GetByIdAsync(user1.Id);
                 if (updatedUser != null)
                 {
-                    Console.WriteLine($""✅ Usuario actualizado: {updatedUser.Username} - {updatedUser.Email}"");
+                    Console.WriteLine($""✅ User updated: {updatedUser.Username} - {updatedUser.Email}"");
                 }
             }
             
-            // 9. Test de consulta por estado
-            Console.WriteLine(""\n🔍 CONSULTANDO USUARIOS ACTIVOS..."");
+            // 9. Query by status test
+            Console.WriteLine(""\n🔍 QUERYING ACTIVE USERS..."");
             var activeUsers = await usersRepo.GetByStatusAsync(""active"");
-            Console.WriteLine($""📊 Usuarios activos: {activeUsers.Count}"");
+            Console.WriteLine($""📊 Active users: {activeUsers.Count}"");
             
-            // 10. Test de conteo
-            Console.WriteLine(""\n📊 CONTANDO USUARIOS ACTIVOS..."");
+            // 10. Count test
+            Console.WriteLine(""\n📊 COUNTING ACTIVE USERS..."");
             var activeCount = await usersRepo.GetActiveCountAsync();
-            Console.WriteLine($""✅ Conteo de usuarios activos: {activeCount}"");
+            Console.WriteLine($""✅ Active users count: {activeCount}"");
             
-            // 11. Cleanup - Eliminar usuarios
-            Console.WriteLine(""\n🗑️ LIMPIANDO DATOS..."");
+            // 11. Cleanup - Delete users
+            Console.WriteLine(""\n🗑️ CLEANING UP DATA..."");
             foreach (var user in users)
             {
                 await usersRepo.DeleteByIdAsync(user.Id);
             }
-            Console.WriteLine(""✅ Usuarios eliminados"");
+            Console.WriteLine(""✅ Users deleted"");
             
-            // 12. Eliminar tabla
+            // 12. Drop table
             await DropUsersTable(connectionString);
             
-            Console.WriteLine(""\n✅ TEST COMPLETADO EXITOSAMENTE!"");
-            Console.WriteLine(""🎉 La librería funciona perfectamente!"");
+            Console.WriteLine(""\n✅ TEST COMPLETED SUCCESSFULLY!"");
+            Console.WriteLine(""🎉 The library works perfectly!"");
         }
         catch (Exception ex)
         {
@@ -271,14 +271,14 @@ class TestRunner
                 CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
                 UpdatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE()
             )
-            PRINT 'Tabla Users creada'
+            PRINT 'Users table created'
         END"";
         
         using var connection = new SqlConnection(connectionString);
         using var command = new SqlCommand(sql, connection);
         await connection.OpenAsync();
         await command.ExecuteNonQueryAsync();
-        Console.WriteLine(""✅ Tabla Users preparada"");
+        Console.WriteLine(""✅ Users table prepared"");
     }
     
     static async Task DropUsersTable(string connectionString)
@@ -288,12 +288,12 @@ class TestRunner
         using var command = new SqlCommand(sql, connection);
         await connection.OpenAsync();
         await command.ExecuteNonQueryAsync();
-        Console.WriteLine(""✅ Tabla Users eliminada"");
+        Console.WriteLine(""✅ Users table dropped"");
     }
 }";
 
         await File.WriteAllTextAsync("TestExample.cs", testCode);
-        Console.WriteLine("✅ Archivo TestExample.cs creado con test completo");
+        Console.WriteLine("✅ TestExample.cs file created with complete test");
     }
 
     static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -305,12 +305,12 @@ class TestRunner
             })
             .ConfigureServices((context, services) =>
             {
-                // Configurar GeneratorConfig desde appsettings
+                // Configure GeneratorConfig from appsettings
                 var generatorConfig = new GeneratorConfig();
                 context.Configuration.GetSection("Generator").Bind(generatorConfig);
                 services.AddSingleton(generatorConfig);
                 
-                // Configurar logging
+                // Configure logging
                 services.AddLogging(builder =>
                 {
                     builder.AddConsole();
@@ -330,7 +330,7 @@ class TestRunner
 entity: ""Users""
 entityversion: ""1""
 version: ""1.0""
-description: ""Entidad para gestión de usuarios del sistema""
+description: ""Entity for system user management""
 
 fields:
   - name: ""Id""
@@ -338,67 +338,67 @@ fields:
     primaryKey: true
     autoIncrement: true
     required: true
-    description: ""Identificador único del usuario""
+    description: ""Unique user identifier""
   - name: ""Username""
     type: ""string""
     maxLength: 50
     required: true
-    description: ""Nombre de usuario único""
+    description: ""Unique username""
   - name: ""PasswordHash""
     type: ""string""
     maxLength: 255
     required: true
-    description: ""Hash de la contraseña""
+    description: ""Password hash""
   - name: ""Email""
     type: ""string""
     maxLength: 100
     required: true
-    description: ""Dirección de correo electrónico""
+    description: ""Email address""
   - name: ""FirstName""
     type: ""string""
     maxLength: 50
-    description: ""Nombre del usuario""
+    description: ""User's first name""
   - name: ""LastName""
     type: ""string""
     maxLength: 50
-    description: ""Apellido del usuario""
+    description: ""User's last name""
   - name: ""status""
     type: ""string""
     defaultValue: ""active""
     catalog: ""statuses""
-    description: ""Estado del usuario""
+    description: ""User status""
   - name: ""CreatedAt""
     type: ""DateTime""
     defaultValue: ""CURRENT_TIMESTAMP_UTC""
     required: true
-    description: ""Fecha de creación""
+    description: ""Creation date""
   - name: ""UpdatedAt""
     type: ""DateTime""
     defaultValue: ""CURRENT_TIMESTAMP_UTC""
     required: true
-    description: ""Fecha de última actualización""
+    description: ""Last update date""
 
 catalogs:
   statuses:
     - name: ""active""
-      description: ""Usuario activo""
+      description: ""Active user""
     - name: ""inactive""
-      description: ""Usuario inactivo""
+      description: ""Inactive user""
     - name: ""banned""
-      description: ""Usuario baneado""
+      description: ""Banned user""
 
 statements:
   - name: ""Insert""
     type: ""Insert""
     return: ""nothing""
-    description: ""Crea un nuevo usuario""
+    description: ""Create a new user""
     sql: |
       INSERT INTO Users (Username, PasswordHash, Email, FirstName, LastName, status)
       VALUES (@Username, @PasswordHash, @Email, @FirstName, @LastName, @status);
   - name: ""Update""
     type: ""Update""
     return: ""nothing""
-    description: ""Actualiza un usuario existente""
+    description: ""Update an existing user""
     sql: |
       UPDATE Users 
       SET Username = @Username,
@@ -412,14 +412,14 @@ statements:
   - name: ""DeleteById""
     type: ""Delete""
     return: ""nothing""
-    description: ""Elimina un usuario por ID""
+    description: ""Delete a user by ID""
     sql: |
       DELETE FROM Users 
       WHERE Id = @Id;
   - name: ""GetAll""
     type: ""Select""
     return: ""many""
-    description: ""Obtiene todos los usuarios ordenados por fecha de creación""
+    description: ""Get all users ordered by creation date""
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt
       FROM Users
@@ -427,7 +427,7 @@ statements:
   - name: ""GetById""
     type: ""Select""
     return: ""one""
-    description: ""Obtiene un usuario por su ID""
+    description: ""Get a user by ID""
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt
       FROM Users
@@ -435,7 +435,7 @@ statements:
   - name: ""GetByUser""
     type: ""Select""
     return: ""one""
-    description: ""Obtiene un usuario por nombre de usuario""
+    description: ""Get a user by username""
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt
       FROM Users
@@ -443,7 +443,7 @@ statements:
   - name: ""GetByStatus""
     type: ""Select""
     return: ""many""
-    description: ""Obtiene usuarios filtrados por estado""
+    description: ""Get users filtered by status""
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt
       FROM Users
@@ -452,7 +452,7 @@ statements:
   - name: ""GetActiveCount""
     type: ""Select""
     return: ""scalar""
-    description: ""Obtiene el conteo de usuarios activos""
+    description: ""Get count of active users""
     sql: |
       SELECT COUNT(*)
       FROM Users
@@ -460,15 +460,15 @@ statements:
   - name: ""GetByEmailAndStatus""
     type: ""Select""
     return: ""many""
-    description: ""Búsqueda avanzada de usuarios""
+    description: ""Advanced user search""
     sql: |
       SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt,
-             CONCAT(FirstName, ' ', LastName) as Name,
+             CONCAT(FirstName, ' ',
              CASE 
-               WHEN status = 'active' THEN 'Activo'
-               WHEN status = 'inactive' THEN 'Inactivo'
-               WHEN status = 'banned' THEN 'Baneado'
-               ELSE 'Desconocido'
+               WHEN status = 'active' THEN 'Active'
+               WHEN status = 'inactive' THEN 'Inactive'
+               WHEN status = 'banned' THEN 'Banned'
+               ELSE 'Unknown'
              END as Status
       FROM Users 
       WHERE (@searchTerm IS NULL OR CONCAT(FirstName, ' ', LastName) LIKE CONCAT('%', @searchTerm, '%') 
@@ -477,7 +477,7 @@ statements:
       ORDER BY CreatedAt DESC;";
 
             await File.WriteAllTextAsync(exampleFile, exampleContent);
-            Console.WriteLine($"📄 Archivo de ejemplo creado: {exampleFile}");
+            Console.WriteLine($"📄 Example file created: {exampleFile}");
         }
     }
 }

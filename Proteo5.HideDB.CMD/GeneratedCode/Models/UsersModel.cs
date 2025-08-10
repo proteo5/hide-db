@@ -6,7 +6,7 @@ namespace Proteo5.HideDB.Generated.Models
 {
     /// <summary>
     /// Modelo para la entidad Users
-    /// Entidad para gesti�n de usuarios del sistema - Updated dependencies
+    /// Entity for system user management - Updated dependencies
     /// Generado automáticamente - Version: 1.0
     /// </summary>
     [Table("Users")]
@@ -16,58 +16,58 @@ namespace Proteo5.HideDB.Generated.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         /// <summary>
-        /// Identificador �nico del usuario
+        /// Unique user identifier
         /// </summary>
         public int Id { get; set; }
 
         [Required]
         [MaxLength(50)]
         /// <summary>
-        /// Nombre de usuario �nico
+        /// Unique username
         /// </summary>
         public string Username { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(255)]
         /// <summary>
-        /// Hash de la contrase�a
+        /// Password hash
         /// </summary>
         public string PasswordHash { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(100)]
         /// <summary>
-        /// Direcci�n de correo electr�nico
+        /// Email address
         /// </summary>
         public string Email { get; set; } = string.Empty;
 
         [MaxLength(50)]
         /// <summary>
-        /// Nombre del usuario
+        /// User's first name
         /// </summary>
         public string? FirstName { get; set; }
 
         [MaxLength(50)]
         /// <summary>
-        /// Apellido del usuario
+        /// User's last name
         /// </summary>
         public string? LastName { get; set; }
 
         /// <summary>
-        /// Estado del usuario
+        /// User status
         /// Catálogo: statuses
         /// </summary>
         public string? status { get; set; }
 
         [Required]
         /// <summary>
-        /// Fecha de creaci�n
+        /// Creation date
         /// </summary>
         public DateTime CreatedAt { get; set; }
 
         [Required]
         /// <summary>
-        /// Fecha de �ltima actualizaci�n
+        /// Last update date
         /// </summary>
         public DateTime UpdatedAt { get; set; }
 

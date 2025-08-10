@@ -11,92 +11,92 @@ namespace Proteo5.HideDB.Generated.Repositories
     public interface IUsersRepository
     {
         /// <summary>
-        /// Crea un nuevo usuario
+        /// Create a new user
         /// </summary>
         int Insert(object Username, object PasswordHash, object Email, object FirstName, object LastName, object status);
 
         /// <summary>
-        /// Crea un nuevo usuario (Async)
+        /// Create a new user (Async)
         /// </summary>
         Task<int> InsertAsync(object Username, object PasswordHash, object Email, object FirstName, object LastName, object status);
 
         /// <summary>
-        /// Actualiza un usuario existente
+        /// Update an existing user
         /// </summary>
         int Update(object Username, object PasswordHash, object Email, object FirstName, object LastName, object status, object Id);
 
         /// <summary>
-        /// Actualiza un usuario existente (Async)
+        /// Update an existing user (Async)
         /// </summary>
         Task<int> UpdateAsync(object Username, object PasswordHash, object Email, object FirstName, object LastName, object status, object Id);
 
         /// <summary>
-        /// Elimina un usuario por ID
+        /// Delete a user by ID
         /// </summary>
         int DeleteById(object Id);
 
         /// <summary>
-        /// Elimina un usuario por ID (Async)
+        /// Delete a user by ID (Async)
         /// </summary>
         Task<int> DeleteByIdAsync(object Id);
 
         /// <summary>
-        /// Obtiene todos los usuarios ordenados por fecha de creaci�n
+        /// Get all users ordered by creation date
         /// </summary>
         List<UsersModel> GetAll();
 
         /// <summary>
-        /// Obtiene todos los usuarios ordenados por fecha de creaci�n (Async)
+        /// Get all users ordered by creation date (Async)
         /// </summary>
         Task<List<UsersModel>> GetAllAsync();
 
         /// <summary>
-        /// Obtiene un usuario por su ID
+        /// Get a user by ID
         /// </summary>
         UsersModel? GetById(object Id);
 
         /// <summary>
-        /// Obtiene un usuario por su ID (Async)
+        /// Get a user by ID (Async)
         /// </summary>
         Task<UsersModel?> GetByIdAsync(object Id);
 
         /// <summary>
-        /// Obtiene un usuario por nombre de usuario
+        /// Get a user by username
         /// </summary>
         UsersModel? GetByUser(object Username);
 
         /// <summary>
-        /// Obtiene un usuario por nombre de usuario (Async)
+        /// Get a user by username (Async)
         /// </summary>
         Task<UsersModel?> GetByUserAsync(object Username);
 
         /// <summary>
-        /// Obtiene usuarios filtrados por estado
+        /// Get users filtered by status
         /// </summary>
         List<UsersModel> GetByStatus(object status);
 
         /// <summary>
-        /// Obtiene usuarios filtrados por estado (Async)
+        /// Get users filtered by status (Async)
         /// </summary>
         Task<List<UsersModel>> GetByStatusAsync(object status);
 
         /// <summary>
-        /// Obtiene el conteo de usuarios activos
+        /// Get count of active users
         /// </summary>
         object? GetActiveCount();
 
         /// <summary>
-        /// Obtiene el conteo de usuarios activos (Async)
+        /// Get count of active users (Async)
         /// </summary>
         Task<object?> GetActiveCountAsync();
 
         /// <summary>
-        /// B�squeda avanzada de usuarios
+        /// Advanced user search
         /// </summary>
         List<UsersModel> GetByEmailAndStatus(object searchTerm, object statusFilter);
 
         /// <summary>
-        /// B�squeda avanzada de usuarios (Async)
+        /// Advanced user search (Async)
         /// </summary>
         Task<List<UsersModel>> GetByEmailAndStatusAsync(object searchTerm, object statusFilter);
 

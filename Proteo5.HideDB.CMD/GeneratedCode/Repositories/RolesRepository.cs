@@ -30,7 +30,7 @@ namespace Proteo5.HideDB.Generated.Repositories
         }
 
         /// <summary>
-        /// Crea un nuevo rol
+        /// Create a new role
         /// </summary>
         public int Insert(object Name, object Description, object IsActive)
         {
@@ -50,7 +50,7 @@ VALUES (@Name, @Description, @IsActive);
         }
 
         /// <summary>
-        /// Crea un nuevo rol (Async)
+        /// Create a new role (Async)
         /// </summary>
         public async Task<int> InsertAsync(object Name, object Description, object IsActive)
         {
@@ -70,7 +70,7 @@ VALUES (@Name, @Description, @IsActive);
         }
 
         /// <summary>
-        /// Actualiza un rol existente
+        /// Update an existing role
         /// </summary>
         public int Update(object Name, object Description, object IsActive, object Id)
         {
@@ -95,7 +95,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Actualiza un rol existente (Async)
+        /// Update an existing role (Async)
         /// </summary>
         public async Task<int> UpdateAsync(object Name, object Description, object IsActive, object Id)
         {
@@ -120,7 +120,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Elimina un rol por ID
+        /// Delete a role by ID
         /// </summary>
         public int DeleteById(object Id)
         {
@@ -138,7 +138,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Elimina un rol por ID (Async)
+        /// Delete a role by ID (Async)
         /// </summary>
         public async Task<int> DeleteByIdAsync(object Id)
         {
@@ -156,7 +156,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Obtiene todos los roles ordenados por nombre
+        /// Get all roles ordered by name
         /// </summary>
         public List<RolesModel> GetAll()
         {
@@ -182,7 +182,7 @@ ORDER BY Name ASC;
         }
 
         /// <summary>
-        /// Obtiene todos los roles ordenados por nombre (Async)
+        /// Get all roles ordered by name (Async)
         /// </summary>
         public async Task<List<RolesModel>> GetAllAsync()
         {
@@ -208,7 +208,7 @@ ORDER BY Name ASC;
         }
 
         /// <summary>
-        /// Obtiene un rol por su ID
+        /// Get a role by ID
         /// </summary>
         public RolesModel? GetById(object Id)
         {
@@ -234,7 +234,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Obtiene un rol por su ID (Async)
+        /// Get a role by ID (Async)
         /// </summary>
         public async Task<RolesModel?> GetByIdAsync(object Id)
         {
@@ -260,7 +260,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Obtiene un rol por su nombre
+        /// Get a role by name
         /// </summary>
         public RolesModel? GetByName(object Name)
         {
@@ -286,7 +286,7 @@ WHERE Name = @Name;
         }
 
         /// <summary>
-        /// Obtiene un rol por su nombre (Async)
+        /// Get a role by name (Async)
         /// </summary>
         public async Task<RolesModel?> GetByNameAsync(object Name)
         {
@@ -312,7 +312,7 @@ WHERE Name = @Name;
         }
 
         /// <summary>
-        /// Obtiene todos los roles activos
+        /// Get all active roles
         /// </summary>
         public List<RolesModel> GetActive()
         {
@@ -339,7 +339,7 @@ ORDER BY Name ASC;
         }
 
         /// <summary>
-        /// Obtiene todos los roles activos (Async)
+        /// Get all active roles (Async)
         /// </summary>
         public async Task<List<RolesModel>> GetActiveAsync()
         {
@@ -366,7 +366,7 @@ ORDER BY Name ASC;
         }
 
         /// <summary>
-        /// Obtiene el conteo de roles activos
+        /// Get count of active roles
         /// </summary>
         public object? GetActiveCount()
         {
@@ -385,7 +385,7 @@ WHERE IsActive = 1;
         }
 
         /// <summary>
-        /// Obtiene el conteo de roles activos (Async)
+        /// Get count of active roles (Async)
         /// </summary>
         public async Task<object?> GetActiveCountAsync()
         {
@@ -404,7 +404,7 @@ WHERE IsActive = 1;
         }
 
         /// <summary>
-        /// Activa o desactiva un rol
+        /// Activate or deactivate a role
         /// </summary>
         public int SetActiveStatus(object IsActive, object Id)
         {
@@ -424,7 +424,7 @@ WHERE Id = @Id;";
         }
 
         /// <summary>
-        /// Activa o desactiva un rol (Async)
+        /// Activate or deactivate a role (Async)
         /// </summary>
         public async Task<int> SetActiveStatusAsync(object IsActive, object Id)
         {

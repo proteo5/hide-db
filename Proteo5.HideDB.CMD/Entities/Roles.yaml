@@ -2,7 +2,7 @@
 entity: "Roles"
 entityversion: "1"
 version: "1.0"
-description: "Entidad para gestión de roles del sistema"
+description: "Entity for system role management"
 
 fields:
   - name: "Id"
@@ -11,50 +11,50 @@ fields:
     autoIncrement: true
     required: true
     nullable: false
-    description: "Identificador único del rol"
+    description: "Unique role identifier"
   - name: "Name"
     type: "string"
     maxLength: 50
     required: true
     nullable: false
-    description: "Nombre del rol"
+    description: "Role name"
   - name: "Description"
     type: "string"
     maxLength: 255
     required: false
     nullable: true
-    description: "Descripción del rol"
+    description: "Role description"
   - name: "IsActive"
     type: "bool"
     defaultValue: "true"
     required: true
     nullable: false
-    description: "Indica si el rol está activo"
+    description: "Indicates if the role is active"
   - name: "CreatedAt"
     type: "DateTime"
     defaultValue: "CURRENT_TIMESTAMP_UTC"
     required: true
     nullable: false
-    description: "Fecha de creación"
+    description: "Creation date"
   - name: "UpdatedAt"
     type: "DateTime"
     defaultValue: "CURRENT_TIMESTAMP_UTC"
     required: true
     nullable: false
-    description: "Fecha de última actualización"
+    description: "Last update date"
 
 statements:
   - name: "Insert"
     type: "Insert"
     return: "nothing"
-    description: "Crea un nuevo rol"
+    description: "Create a new role"
     sql: |
       INSERT INTO Roles (Name, Description, IsActive)
       VALUES (@Name, @Description, @IsActive);
   - name: "Update"
     type: "Update"
     return: "nothing"
-    description: "Actualiza un rol existente"
+    description: "Update an existing role"
     sql: |
       UPDATE Roles 
       SET Name = @Name,
@@ -65,14 +65,14 @@ statements:
   - name: "DeleteById"
     type: "Delete"
     return: "nothing"
-    description: "Elimina un rol por ID"
+    description: "Delete a role by ID"
     sql: |
       DELETE FROM Roles 
       WHERE Id = @Id;
   - name: "GetAll"
     type: "Select"
     return: "many"
-    description: "Obtiene todos los roles ordenados por nombre"
+    description: "Get all roles ordered by name"
     sql: |
       SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
       FROM Roles
@@ -80,7 +80,7 @@ statements:
   - name: "GetById"
     type: "Select"
     return: "one"
-    description: "Obtiene un rol por su ID"
+    description: "Get a role by ID"
     sql: |
       SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
       FROM Roles
@@ -88,7 +88,7 @@ statements:
   - name: "GetByName"
     type: "Select"
     return: "one"
-    description: "Obtiene un rol por su nombre"
+    description: "Get a role by name"
     sql: |
       SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
       FROM Roles
@@ -96,7 +96,7 @@ statements:
   - name: "GetActive"
     type: "Select"
     return: "many"
-    description: "Obtiene todos los roles activos"
+    description: "Get all active roles"
     sql: |
       SELECT Id, Name, Description, IsActive, CreatedAt, UpdatedAt
       FROM Roles
@@ -105,7 +105,7 @@ statements:
   - name: "GetActiveCount"
     type: "Select"
     return: "scalar"
-    description: "Obtiene el conteo de roles activos"
+    description: "Get count of active roles"
     sql: |
       SELECT COUNT(*)
       FROM Roles
@@ -113,7 +113,7 @@ statements:
   - name: "SetActiveStatus"
     type: "Update"
     return: "nothing"
-    description: "Activa o desactiva un rol"
+    description: "Activate or deactivate a role"
     sql: |
       UPDATE Roles 
       SET IsActive = @IsActive,

@@ -30,7 +30,7 @@ namespace Proteo5.HideDB.Generated.Repositories
         }
 
         /// <summary>
-        /// Crea un nuevo usuario
+        /// Create a new user
         /// </summary>
         public int Insert(object Username, object PasswordHash, object Email, object FirstName, object LastName, object status)
         {
@@ -53,7 +53,7 @@ VALUES (@Username, @PasswordHash, @Email, @FirstName, @LastName, @status);
         }
 
         /// <summary>
-        /// Crea un nuevo usuario (Async)
+        /// Create a new user (Async)
         /// </summary>
         public async Task<int> InsertAsync(object Username, object PasswordHash, object Email, object FirstName, object LastName, object status)
         {
@@ -76,7 +76,7 @@ VALUES (@Username, @PasswordHash, @Email, @FirstName, @LastName, @status);
         }
 
         /// <summary>
-        /// Actualiza un usuario existente
+        /// Update an existing user
         /// </summary>
         public int Update(object Username, object PasswordHash, object Email, object FirstName, object LastName, object status, object Id)
         {
@@ -107,7 +107,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Actualiza un usuario existente (Async)
+        /// Update an existing user (Async)
         /// </summary>
         public async Task<int> UpdateAsync(object Username, object PasswordHash, object Email, object FirstName, object LastName, object status, object Id)
         {
@@ -138,7 +138,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Elimina un usuario por ID
+        /// Delete a user by ID
         /// </summary>
         public int DeleteById(object Id)
         {
@@ -156,7 +156,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Elimina un usuario por ID (Async)
+        /// Delete a user by ID (Async)
         /// </summary>
         public async Task<int> DeleteByIdAsync(object Id)
         {
@@ -174,7 +174,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Obtiene todos los usuarios ordenados por fecha de creaci�n
+        /// Get all users ordered by creation date
         /// </summary>
         public List<UsersModel> GetAll()
         {
@@ -200,7 +200,7 @@ ORDER BY CreatedAt DESC;
         }
 
         /// <summary>
-        /// Obtiene todos los usuarios ordenados por fecha de creaci�n (Async)
+        /// Get all users ordered by creation date (Async)
         /// </summary>
         public async Task<List<UsersModel>> GetAllAsync()
         {
@@ -226,7 +226,7 @@ ORDER BY CreatedAt DESC;
         }
 
         /// <summary>
-        /// Obtiene un usuario por su ID
+        /// Get a user by ID
         /// </summary>
         public UsersModel? GetById(object Id)
         {
@@ -252,7 +252,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Obtiene un usuario por su ID (Async)
+        /// Get a user by ID (Async)
         /// </summary>
         public async Task<UsersModel?> GetByIdAsync(object Id)
         {
@@ -278,7 +278,7 @@ WHERE Id = @Id;
         }
 
         /// <summary>
-        /// Obtiene un usuario por nombre de usuario
+        /// Get a user by username
         /// </summary>
         public UsersModel? GetByUser(object Username)
         {
@@ -304,7 +304,7 @@ WHERE Username = @Username;
         }
 
         /// <summary>
-        /// Obtiene un usuario por nombre de usuario (Async)
+        /// Get a user by username (Async)
         /// </summary>
         public async Task<UsersModel?> GetByUserAsync(object Username)
         {
@@ -330,7 +330,7 @@ WHERE Username = @Username;
         }
 
         /// <summary>
-        /// Obtiene usuarios filtrados por estado
+        /// Get users filtered by status
         /// </summary>
         public List<UsersModel> GetByStatus(object status)
         {
@@ -358,7 +358,7 @@ ORDER BY CreatedAt DESC;
         }
 
         /// <summary>
-        /// Obtiene usuarios filtrados por estado (Async)
+        /// Get users filtered by status (Async)
         /// </summary>
         public async Task<List<UsersModel>> GetByStatusAsync(object status)
         {
@@ -386,7 +386,7 @@ ORDER BY CreatedAt DESC;
         }
 
         /// <summary>
-        /// Obtiene el conteo de usuarios activos
+        /// Get count of active users
         /// </summary>
         public object? GetActiveCount()
         {
@@ -405,7 +405,7 @@ WHERE status = 'active';
         }
 
         /// <summary>
-        /// Obtiene el conteo de usuarios activos (Async)
+        /// Get count of active users (Async)
         /// </summary>
         public async Task<object?> GetActiveCountAsync()
         {
@@ -424,7 +424,7 @@ WHERE status = 'active';
         }
 
         /// <summary>
-        /// B�squeda avanzada de usuarios
+        /// Advanced user search
         /// </summary>
         public List<UsersModel> GetByEmailAndStatus(object searchTerm, object statusFilter)
         {
@@ -436,16 +436,16 @@ WHERE status = 'active';
                 command.CommandText = @"SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt,
        CONCAT(FirstName, ' ', LastName) as Name,
        CASE 
-         WHEN status = 'active' THEN 'Activo'
-         WHEN status = 'inactive' THEN 'Inactivo'
-         WHEN status = 'banned' THEN 'Baneado'
-         ELSE 'Desconocido'
+         WHEN status = 'active' THEN 'Active'
+         WHEN status = 'inactive' THEN 'Inactive'
+         WHEN status = 'banned' THEN 'Banned'
+         ELSE 'Unknown'
        END as Status
 FROM Users 
 WHERE (@searchTerm IS NULL OR CONCAT(FirstName, ' ', LastName) LIKE CONCAT('%', @searchTerm, '%') 
        OR Email LIKE CONCAT('%', @searchTerm, '%'))
   AND (@statusFilter IS NULL OR status = @statusFilter)
-ORDER BY CreatedAt DESC;      ORDER BY CreatedAt DESC;";
+ORDER BY CreatedAt DESC;";
                 command.Parameters.AddWithValue("@searchTerm", searchTerm ?? DBNull.Value);
                 command.Parameters.AddWithValue("@statusFilter", statusFilter ?? DBNull.Value);
                 var result = new List<UsersModel>();
@@ -461,7 +461,7 @@ ORDER BY CreatedAt DESC;      ORDER BY CreatedAt DESC;";
         }
 
         /// <summary>
-        /// B�squeda avanzada de usuarios (Async)
+        /// Advanced user search (Async)
         /// </summary>
         public async Task<List<UsersModel>> GetByEmailAndStatusAsync(object searchTerm, object statusFilter)
         {
@@ -473,16 +473,16 @@ ORDER BY CreatedAt DESC;      ORDER BY CreatedAt DESC;";
                 command.CommandText = @"SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt,
        CONCAT(FirstName, ' ', LastName) as Name,
        CASE 
-         WHEN status = 'active' THEN 'Activo'
-         WHEN status = 'inactive' THEN 'Inactivo'
-         WHEN status = 'banned' THEN 'Baneado'
-         ELSE 'Desconocido'
+         WHEN status = 'active' THEN 'Active'
+         WHEN status = 'inactive' THEN 'Inactive'
+         WHEN status = 'banned' THEN 'Banned'
+         ELSE 'Unknown'
        END as Status
 FROM Users 
 WHERE (@searchTerm IS NULL OR CONCAT(FirstName, ' ', LastName) LIKE CONCAT('%', @searchTerm, '%') 
        OR Email LIKE CONCAT('%', @searchTerm, '%'))
   AND (@statusFilter IS NULL OR status = @statusFilter)
-ORDER BY CreatedAt DESC;      ORDER BY CreatedAt DESC;";
+ORDER BY CreatedAt DESC;";
                 command.Parameters.AddWithValue("@searchTerm", searchTerm ?? DBNull.Value);
                 command.Parameters.AddWithValue("@statusFilter", statusFilter ?? DBNull.Value);
                 var result = new List<UsersModel>();
