@@ -1,29 +1,31 @@
-# ?? Proteo5.HideDB - YAML DSL Generator
+# Proteo5.HideDB - YAML DSL Generator
 
 **Generador de código automático basado en DSL YAML para entidades de base de datos**
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![C#](https://img.shields.io/badge/C%23-13.0-green.svg)](https://docs.microsoft.com/en-us/dotnet/csharp/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](https://github.com)
 
-## ?? Descripción
+## Descripción
 
 Proteo5.HideDB es una herramienta de generación de código que convierte definiciones YAML de entidades en código C# completamente funcional, incluyendo modelos, repositorios, interfaces y scripts SQL. Utiliza un DSL (Domain Specific Language) YAML intuitivo y potente para definir entidades de base de datos y generar automáticamente todo el código necesario para operaciones CRUD.
 
-## ? Características Principales
+## Características Principales
 
-- ?? **Generación Automática de Código**: Modelos, repositorios, interfaces y SQL
-- ?? **DSL YAML Intuitivo**: Sintaxis clara y expresiva para definir entidades
-- ?? **File Watcher**: Regeneración automática al modificar archivos YAML
-- ??? **Type Safety**: Soporte completo para nullable reference types de C# 8+
-- ??? **Multi-Database**: Soporte para SQL Server, PostgreSQL, MySQL, SQLite y Oracle
-- ?? **Métodos Async/Sync**: Generación de métodos síncronos y asíncronos
-- ?? **Data Annotations**: Integración con Entity Framework DataAnnotations
-- ?? **SQL Personalizado**: Soporte para consultas SQL personalizadas
-- ?? **Catálogos/Enums**: Generación automática de enumeraciones
-- ? **Alta Performance**: Código optimizado y libre de warnings
+- **Generación Automática de Código**: Modelos, repositorios, interfaces y SQL
+- **DSL YAML Intuitivo**: Sintaxis clara y expresiva para definir entidades
+- **File Watcher**: Regeneración automática al modificar archivos YAML
+- **Type Safety**: Soporte completo para nullable reference types de C# 8+
+- **Multi-Database**: Soporte para SQL Server, PostgreSQL, MySQL, SQLite y Oracle
+- **Métodos Async/Sync**: Generación de métodos síncronos y asíncronos
+- **Data Annotations**: Integración con Entity Framework DataAnnotations
+- **SQL Personalizado**: Soporte para consultas SQL personalizadas
+- **Catálogos/Enums**: Generación automática de enumeraciones
+- **Alta Performance**: Código optimizado y libre de warnings
 
-## ??? Arquitectura
+## Arquitectura
 
 ```
 Proteo5.HideDB/
@@ -44,7 +46,7 @@ Proteo5.HideDB/
 ??? README.md                     # Este archivo
 ```
 
-## ?? Inicio Rápido
+## Inicio Rápido
 
 ### Prerrequisitos
 
@@ -92,7 +94,7 @@ Proteo5.HideDB/
    dotnet run directtest    # Ejecutar test de la librería
    ```
 
-## ?? Sintaxis YAML
+## Sintaxis YAML
 
 ### Ejemplo Básico: Users.yaml
 
@@ -185,7 +187,7 @@ statements:
 - **`catalog`**: Referencia a catálogo/enum
 - **`description`**: Descripción del campo
 
-## ?? Configuración
+## Configuración
 
 ### appsettings.json
 
@@ -223,7 +225,7 @@ statements:
 - **`GenerateSync`**: Generar métodos síncronos
 - **`AddDataAnnotations`**: Añadir DataAnnotations a modelos
 
-## ?? Código Generado
+## Código Generado
 
 Para cada entidad definida en YAML, se generan los siguientes archivos:
 
@@ -311,7 +313,7 @@ BEGIN
 END
 ```
 
-## ?? Testing
+## Testing
 
 ### Ejecutar Tests
 
@@ -323,7 +325,7 @@ dotnet run directtest
 dotnet run test
 ```
 
-### Test Features
+### Características de Testing
 
 - ? Creación automática de tablas
 - ? Inserción de datos de prueba
@@ -334,7 +336,7 @@ dotnet run test
 - ? Pausas interactivas para verificación manual
 - ? Comandos SQL sugeridos para verificación
 
-## ?? Estadísticas del Proyecto
+## Estadísticas del Proyecto
 
 - **Lenguaje Principal**: C# 13.0
 - **Framework**: .NET 8.0
@@ -346,7 +348,7 @@ dotnet run test
 - **Patrones**: Repository, Factory, Builder
 - **Testing**: Unit Tests + Integration Tests
 
-## ?? Contribuir
+## Contribuir
 
 1. Fork el proyecto
 2. Crear feature branch (`git checkout -b feature/AmazingFeature`)
@@ -362,21 +364,21 @@ dotnet run test
 - Incluir tests para nuevas funcionalidades
 - Mantener cobertura de tests > 80%
 
-## ?? Licencia
+## Licencia
 
 Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
 
-## ?? Agradecimientos
+## Agradecimientos
 
 - [YamlDotNet](https://github.com/aaubry/YamlDotNet) - Serialización YAML
 - [Microsoft.Extensions](https://github.com/dotnet/extensions) - Dependency Injection y Configuration
 - [.NET Community](https://dotnet.microsoft.com/platform/community) - Inspiración y mejores prácticas
 
-## ?? Soporte
+## Soporte
 
-- ?? **Issues**: [GitHub Issues](https://github.com/tu-usuario/hide-db/issues)
-- ?? **Discusiones**: [GitHub Discussions](https://github.com/tu-usuario/hide-db/discussions)
-- ?? **Email**: tu-email@ejemplo.com
+- **Issues**: [GitHub Issues](https://github.com/tu-usuario/hide-db/issues)
+- **Discusiones**: [GitHub Discussions](https://github.com/tu-usuario/hide-db/discussions)
+- **Email**: tu-email@ejemplo.com
 
 ---
 
