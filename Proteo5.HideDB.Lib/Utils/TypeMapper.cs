@@ -20,8 +20,18 @@ namespace Proteo5.HideDB.Lib.Utils
                 _ => "object"
             };
 
-            if (nullable && baseType != "string")
-                return $"{baseType}?";
+            // Handle nullable types
+            if (nullable)
+            {
+                if (baseType == "string")
+                {
+                    return "string?"; // Nullable string in C# 8+
+                }
+                else if (baseType != "object")
+                {
+                    return $"{baseType}?"; // Nullable value types
+                }
+            }
             
             return baseType;
         }

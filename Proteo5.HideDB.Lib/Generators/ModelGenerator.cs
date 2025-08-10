@@ -83,7 +83,7 @@ namespace Proteo5.HideDB.Lib.Generators
                 sb.AppendLine($"        /// Catálogo: {field.Catalog}");
             sb.AppendLine("        /// </summary>");
             
-            // Use the explicit nullable flag from YAML
+            // Use the explicit nullable flag from the YAML
             var csharpType = TypeMapper.MapYamlTypeToCSharp(field.Type, field.Nullable);
             
             // Handle initialization for non-nullable reference types

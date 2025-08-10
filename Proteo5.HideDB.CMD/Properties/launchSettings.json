@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Proteo5.HideDB.CMD": {
+      "commandName": "Project",
+      "commandLineArgs": "run test"
+    }
+  }
+}

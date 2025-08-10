@@ -245,21 +245,20 @@ namespace Proteo5.HideDB.Lib.Generators
 
             foreach (var field in entityDef.Fields)
             {
-                var csharpType = TypeMapper.MapYamlTypeToCSharp(field.Type, field.Nullable);
-                
                 if (field.Type.ToLower() == "string")
                 {
                     if (field.Nullable)
                     {
-                        sb.AppendLine($"                {field.Name} = reader[\"{field.Name}\"] == DBNull.Value ? null : (string?)reader[\"{field.Name}\"],");
+                        sb.AppendLine($"                {field.Name} = reader[\"{field.Name}\"] == DBNull.Value ? null : reader[\"{field.Name}\"].ToString(),");
                     }
                     else
                     {
-                        sb.AppendLine($"                {field.Name} = reader[\"{field.Name}\"] == DBNull.Value ? string.Empty : (string)reader[\"{field.Name}\"],");
+                        sb.AppendLine($"                {field.Name} = reader[\"{field.Name}\"] == DBNull.Value ? string.Empty : (reader[\"{field.Name}\"].ToString() ?? string.Empty),");
                     }
                 }
                 else if (IsValueType(field.Type))
                 {
+                    var csharpType = TypeMapper.MapYamlTypeToCSharp(field.Type, field.Nullable);
                     var baseType = GetBaseTypeName(csharpType);
                     if (field.Nullable)
                     {
@@ -272,6 +271,7 @@ namespace Proteo5.HideDB.Lib.Generators
                 }
                 else
                 {
+                    var csharpType = TypeMapper.MapYamlTypeToCSharp(field.Type, field.Nullable);
                     sb.AppendLine($"                {field.Name} = ({csharpType})reader[\"{field.Name}\"],");
                 }
             }

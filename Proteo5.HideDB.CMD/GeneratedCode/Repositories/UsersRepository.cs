@@ -92,7 +92,7 @@ SET Username = @Username,
     FirstName = @FirstName,
     LastName = @LastName,
     status = @status,
-    UpdatedAt = CURRENT_TIMESTAMP_UTC
+    UpdatedAt = GETUTCDATE()
 WHERE Id = @Id;
 ";
                 command.Parameters.AddWithValue("@Username", Username ?? DBNull.Value);
@@ -123,7 +123,7 @@ SET Username = @Username,
     FirstName = @FirstName,
     LastName = @LastName,
     status = @status,
-    UpdatedAt = CURRENT_TIMESTAMP_UTC
+    UpdatedAt = GETUTCDATE()
 WHERE Id = @Id;
 ";
                 command.Parameters.AddWithValue("@Username", Username ?? DBNull.Value);
@@ -433,9 +433,8 @@ WHERE status = 'active';
             {
                 connection.Open();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, 
-       CONCAT(FirstName, ' ', LastName) as Name, 
-       Email,
+                command.CommandText = @"SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt,
+       CONCAT(FirstName, ' ', LastName) as Name,
        CASE 
          WHEN status = 'active' THEN 'Activo'
          WHEN status = 'inactive' THEN 'Inactivo'
@@ -446,7 +445,7 @@ FROM Users
 WHERE (@searchTerm IS NULL OR CONCAT(FirstName, ' ', LastName) LIKE CONCAT('%', @searchTerm, '%') 
        OR Email LIKE CONCAT('%', @searchTerm, '%'))
   AND (@statusFilter IS NULL OR status = @statusFilter)
-ORDER BY CreatedAt DESC;";
+ORDER BY CreatedAt DESC;      ORDER BY CreatedAt DESC;";
                 command.Parameters.AddWithValue("@searchTerm", searchTerm ?? DBNull.Value);
                 command.Parameters.AddWithValue("@statusFilter", statusFilter ?? DBNull.Value);
                 var result = new List<UsersModel>();
@@ -471,9 +470,8 @@ ORDER BY CreatedAt DESC;";
             {
                 await connection.OpenAsync();
                 command.Connection = connection;
-                command.CommandText = @"SELECT Id, 
-       CONCAT(FirstName, ' ', LastName) as Name, 
-       Email,
+                command.CommandText = @"SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt,
+       CONCAT(FirstName, ' ', LastName) as Name,
        CASE 
          WHEN status = 'active' THEN 'Activo'
          WHEN status = 'inactive' THEN 'Inactivo'
@@ -484,7 +482,7 @@ FROM Users
 WHERE (@searchTerm IS NULL OR CONCAT(FirstName, ' ', LastName) LIKE CONCAT('%', @searchTerm, '%') 
        OR Email LIKE CONCAT('%', @searchTerm, '%'))
   AND (@statusFilter IS NULL OR status = @statusFilter)
-ORDER BY CreatedAt DESC;";
+ORDER BY CreatedAt DESC;      ORDER BY CreatedAt DESC;";
                 command.Parameters.AddWithValue("@searchTerm", searchTerm ?? DBNull.Value);
                 command.Parameters.AddWithValue("@statusFilter", statusFilter ?? DBNull.Value);
                 var result = new List<UsersModel>();
@@ -504,12 +502,12 @@ ORDER BY CreatedAt DESC;";
             return new UsersModel
             {
                 Id = reader["Id"] == DBNull.Value ? default(int) : (int)reader["Id"],
-                Username = reader["Username"] == DBNull.Value ? string.Empty : (string)reader["Username"],
-                PasswordHash = reader["PasswordHash"] == DBNull.Value ? string.Empty : (string)reader["PasswordHash"],
-                Email = reader["Email"] == DBNull.Value ? string.Empty : (string)reader["Email"],
-                FirstName = reader["FirstName"] == DBNull.Value ? null : (string?)reader["FirstName"],
-                LastName = reader["LastName"] == DBNull.Value ? null : (string?)reader["LastName"],
-                status = reader["status"] == DBNull.Value ? null : (string?)reader["status"],
+                Username = reader["Username"] == DBNull.Value ? string.Empty : (reader["Username"].ToString() ?? string.Empty),
+                PasswordHash = reader["PasswordHash"] == DBNull.Value ? string.Empty : (reader["PasswordHash"].ToString() ?? string.Empty),
+                Email = reader["Email"] == DBNull.Value ? string.Empty : (reader["Email"].ToString() ?? string.Empty),
+                FirstName = reader["FirstName"] == DBNull.Value ? null : reader["FirstName"].ToString(),
+                LastName = reader["LastName"] == DBNull.Value ? null : reader["LastName"].ToString(),
+                status = reader["status"] == DBNull.Value ? null : reader["status"].ToString(),
                 CreatedAt = reader["CreatedAt"] == DBNull.Value ? default(DateTime) : (DateTime)reader["CreatedAt"],
                 UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? default(DateTime) : (DateTime)reader["UpdatedAt"],
             };

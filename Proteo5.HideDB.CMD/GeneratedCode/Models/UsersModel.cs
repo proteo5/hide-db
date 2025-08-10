@@ -45,19 +45,19 @@ namespace Proteo5.HideDB.Generated.Models
         /// <summary>
         /// Nombre del usuario
         /// </summary>
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [MaxLength(50)]
         /// <summary>
         /// Apellido del usuario
         /// </summary>
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         /// <summary>
         /// Estado del usuario
         /// Catálogo: statuses
         /// </summary>
-        public string status { get; set; }
+        public string? status { get; set; }
 
         [Required]
         /// <summary>

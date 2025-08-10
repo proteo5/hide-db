@@ -91,7 +91,7 @@ statements:
           FirstName = @FirstName,
           LastName = @LastName,
           status = @status,
-          UpdatedAt = CURRENT_TIMESTAMP_UTC
+          UpdatedAt = GETUTCDATE()
       WHERE Id = @Id;
   - name: "DeleteById"
     type: "Delete"
@@ -146,9 +146,8 @@ statements:
     return: "many"
     description: "Búsqueda avanzada de usuarios"
     sql: |
-      SELECT Id, 
-             CONCAT(FirstName, ' ', LastName) as Name, 
-             Email,
+      SELECT Id, Username, PasswordHash, Email, FirstName, LastName, status, CreatedAt, UpdatedAt,
+             CONCAT(FirstName, ' ', LastName) as Name,
              CASE 
                WHEN status = 'active' THEN 'Activo'
                WHEN status = 'inactive' THEN 'Inactivo'
@@ -159,4 +158,4 @@ statements:
       WHERE (@searchTerm IS NULL OR CONCAT(FirstName, ' ', LastName) LIKE CONCAT('%', @searchTerm, '%') 
              OR Email LIKE CONCAT('%', @searchTerm, '%'))
         AND (@statusFilter IS NULL OR status = @statusFilter)
-      ORDER BY CreatedAt DESC;
+      ORDER BY CreatedAt DESC;      ORDER BY CreatedAt DESC;
